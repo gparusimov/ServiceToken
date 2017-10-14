@@ -1,0 +1,2 @@
+"/Applications/Ethereum Wallet.app/Contents/MacOS/Ethereum Wallet" --rpc http://localhost:8545
+testrpc --mnemonic "nose snow exhibit begin street waste grace build clown fringe glare helmet"
