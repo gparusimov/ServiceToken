@@ -14,7 +14,7 @@ contract FlexiTimeToken {
   /* Token constructor */
   function FlexiTimeToken() {
     agreement = FlexiTimeAgreement(msg.sender); // Set backlink
-    balances[agreement.beneficiary()] = agreement.totalSupply(); // Assign all tokens to issuer
+    balances[agreement.beneficiary()] = agreement.totalSupply(); // Assign all tokens to beneficiary
   }
 
   /* Returns account balance */
