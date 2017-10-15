@@ -4,27 +4,33 @@ import "./FlexiTimeToken.sol";
 
 /* Tracks under escrow token usage per specific task */
 contract FlexiTimeTask {
-  FlexiTimeToken public ftt;
-  address public issuer; // Token issuer address
-  address public beneficiary; // Token owner or beneficiary
-  bytes32 public docId;
 
-  function FlexiTimeTask(bytes32 _docId, address _issuer, address _beneficiary) {
-    ftt = FlexiTimeToken(msg.sender);
-    issuer = _issuer;
-    beneficiary = _beneficiary;
-    docId = _docId;
+  enum States { Created, Settled, Refunded }
+
+  States public state;
+  FlexiTimeToken public token;
+
+  modifier onlyCreated {
+    require(state == States.Created);
+    _;
+  }
+
+  function FlexiTimeTask() {
+    token = FlexiTimeToken(msg.sender);
+    state = States.Created;
   }
 
   /* Beneficiary is able to settle with issuer by transferring tokens out of escrow */
-  function settle(uint256 _value) {
-    require(msg.sender == beneficiary);
-    ftt.transfer(issuer, _value);
+  function settle() onlyCreated {
+    require(msg.sender == token.agreement().beneficiary());
+    token.transfer(token.agreement().issuer(), token.balanceOf(this));
+    state = States.Settled;
   }
 
   /* Issuer is able to refund tokens in escrow back to beneficiary */
-  function refund(uint256 _value) {
-    require(msg.sender == issuer);
-    ftt.transfer(beneficiary, _value);
+  function refund() onlyCreated {
+    require(msg.sender == token.agreement().issuer());
+    token.transfer(token.agreement().beneficiary(), token.balanceOf(this));
+    state = States.Refunded;
   }
 }

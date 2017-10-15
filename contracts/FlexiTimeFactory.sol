@@ -14,15 +14,15 @@ contract FlexiTimeFactory {
     uint _validFrom,
     uint _expiresEnd,
     address _issuer,
-    address _beneficiary,
-    address _judge
-    ) returns (FlexiTimeAgreement agreementAddress) {
+    address _beneficiary
+    ) returns (FlexiTimeAgreement _agreement) {
 
     FlexiTimeAgreement agreement = new FlexiTimeAgreement(
       _name, _symbol, _decimals, _totalSupply, _validFrom,
-      _expiresEnd, _issuer, _beneficiary, _judge);
+      _expiresEnd, _issuer, _beneficiary);
 
     agreements.push(agreement);
+
     return agreement;
   }
 }
