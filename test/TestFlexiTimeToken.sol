@@ -1,4 +1,4 @@
-pragma solidity ^0.4.2;
+pragma solidity ^0.4.4;
 
 // testrpc --mnemonic "nose snow exhibit begin street waste grace build clown fringe glare helmet"
 
@@ -7,7 +7,7 @@ import "truffle/DeployedAddresses.sol";
 import "../contracts/FlexiTimeToken.sol";
 
 contract TestFlexiTimeToken {
-  address public beneficiary = 0xC52edCdea8d5458C7F3FC3e16D7CC454b6893508;
+  /*address public beneficiary = 0xC52edCdea8d5458C7F3FC3e16D7CC454b6893508;
 
   function testUnexpiredBalance() {
     FlexiTimeToken ftt = FlexiTimeToken(DeployedAddresses.FlexiTimeToken());
@@ -29,5 +29,5 @@ contract TestFlexiTimeToken {
 
     uint totalSupply = 0;
     Assert.equal(ftt.balanceOf(beneficiary), totalSupply, "Beneficiary should have 0 FlexiTime tokens initially");
-  }
+  }*/
 }

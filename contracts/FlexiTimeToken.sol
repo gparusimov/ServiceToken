@@ -6,6 +6,7 @@ import "./FlexiTimeAgreement.sol";
 /* Tracks tokens isssued */
 contract FlexiTimeToken {
   event Transfer(address indexed _from, address indexed _to, uint256 _value);
+  event Task(FlexiTimeTask task);
 
   FlexiTimeAgreement public agreement; // Backlink to agreement that created the token
   mapping (address => uint256) balances; // This creates an array with all balances
@@ -27,10 +28,10 @@ contract FlexiTimeToken {
   }
 
   /* Create a new task where tokens can be sent into escrow */
-  function createTask() returns (FlexiTimeTask _task) {
+  function createTask() {
     FlexiTimeTask task = new FlexiTimeTask();
     tasks.push(task);
-    return task;
+    Task(task);
   }
 
   /* Send coins */
@@ -41,5 +42,6 @@ contract FlexiTimeToken {
     require(now < agreement.expiresEnd());             // Check if contract has expired
     balances[msg.sender] -= _value;                    // Subtract from the sender
     balances[_to] += _value;                           // Add the same to the recipient
+    Transfer(msg.sender, _to, _value);
   }
 }
