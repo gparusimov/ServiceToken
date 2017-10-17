@@ -1,5 +1,4 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<mat-toolbar color="primary">
+<mat-toolbar color="primary" class="ftt-fixed-header">
   <span>FlexiTime Token</span>
   <span class="ftt-spacer"></span>
   <a mat-icon-button href="https://etherscan.io/address/{{ account }}" target="_blank">
@@ -9,8 +8,58 @@
     <mat-icon matTooltip="help">help</mat-icon>
   </a>
 </mat-toolbar>
-<div style="text-align:center">
-  <h1>
-    Welcome to FlexiTime Token!
-  </h1>
+
+<div>
+  <mat-card>
+    <mat-card-title>FlexiTime Factory</mat-card-title>
+    <mat-card-subtitle>View Agreement</mat-card-subtitle>
+
+    <mat-card-content>
+      List of agreements
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button mat-raised-button>Fetch</button>
+    </mat-card-actions>
+  </mat-card>
+
+  <mat-card>
+    <mat-card-title>FlexiTime Factory</mat-card-title>
+    <mat-card-subtitle>Create Agreement</mat-card-subtitle>
+    <mat-card-content>
+      <form class="ftt-form">
+        <mat-form-field class="ftt-full-width">
+          <input matInput placeholder="Token name">
+        </mat-form-field>
+        <mat-form-field class="ftt-full-width">
+          <input matInput placeholder="Token symbol">
+        </mat-form-field>
+        <mat-form-field class="ftt-full-width">
+          <input matInput placeholder="Decimal places" type="number">
+        </mat-form-field>
+        <mat-form-field class="ftt-full-width">
+          <input matInput placeholder="Total supply" type="number">
+        </mat-form-field>
+        <mat-form-field class="ftt-full-width">
+          <input matInput [matDatepicker]="pickerFrom" placeholder="Valid from date">
+          <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+          <mat-datepicker #pickerFrom></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field class="ftt-full-width">
+          <input matInput [matDatepicker]="pickerEnd" placeholder="Expires end date">
+          <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+          <mat-datepicker #pickerEnd></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field class="ftt-full-width">
+          <input matInput placeholder="Issuer address">
+        </mat-form-field>
+        <mat-form-field class="ftt-full-width">
+          <input matInput placeholder="Beneficiary address">
+        </mat-form-field>
+      </form>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button>Create</button>
+    </mat-card-actions>
+  </mat-card>
 </div>
