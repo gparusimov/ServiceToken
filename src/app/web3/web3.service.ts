@@ -38,6 +38,10 @@ export class Web3Service {
       if (this.windowRef.nativeWindow.web3) {
         console.log('Using provided web3 implementation');
         this.web3 = new Web3(this.windowRef.nativeWindow.web3.currentProvider);
+        this.FlexiTimeFactory.setProvider(this.web3.currentProvider);
+        this.FlexiTimeAgreement.setProvider(this.web3.currentProvider);
+        this.FlexiTimeToken.setProvider(this.web3.currentProvider);
+        this.FlexiTimeTask.setProvider(this.web3.currentProvider);
         this.refreshAccounts();
       }
       else {
