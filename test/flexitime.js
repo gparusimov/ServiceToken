@@ -1,31 +1,65 @@
-var FlexiTimeToken = artifacts.require("./FlexiTimeToken.sol");
+var FlexiTimeFactory = artifacts.require("./FlexiTimeFactory.sol");
+var FlexiTimeAgreement = artifacts.require("./FlexiTimeAgreement.sol");
 
-contract('FlexiTimeToken', function(accounts) {
-  it("should have beneficiary as account[1]", function() {
-    return FlexiTimeToken.deployed().then(function(instance) {
-      return instance.beneficiary.call();
-    }).then(function(beneficiary) {
-      assert.equal(beneficiary, accounts[1], "Beneficiary must be same account[1]");
+contract('FlexiTimeFactory', function(accounts) {
+  issuer = accounts[0];
+  beneficiary = accounts[1];
+  totalSupply = 240;
+  validFrom = Math.round(new Date() / 1000);
+  expiresEnd = validFrom + 60;
+
+  it("should agree to 240 tokens", function() {
+    return FlexiTimeFactory.deployed().then(function(factory) {
+      factory.createAgreement(
+        "FlexiTimeToken", "FTT", 0, totalSupply, validFrom, expiresEnd, issuer, beneficiary
+      );
+      return factory;
+    }).then(function(factory) {
+      return factory.agreements.call(0);
+    }).then(function(agreementAddress) {
+      return FlexiTimeAgreement.at(agreementAddress);
+    }).then(function(agreement) {
+      return agreement.totalSupply.call();
+    }).then(function(_totalSupply) {
+      console.log("totalSupply: ", _totalSupply.toNumber());
+      assert.equal(_totalSupply.toNumber(), totalSupply, "Issued tokens should be equal to 240");
     }).catch(function(e) {
       console.log(e);
     });
   });
 });
 
-contract('FlexiTimeToken', function(accounts) {
-  it("should show task count as 3", function() {
-    return FlexiTimeToken.deployed().then(function(instance) {
-      instance.createTask('task1', {from: accounts[1]});
-      instance.createTask('task2', {from: accounts[1]});
-      instance.createTask('task3', {from: accounts[1]});
-      return instance.taskCount.call();
-    }).then(function(count) {
-      assert.equal(count.toNumber(), 3, "Task count should be equal to 3");
-    }).catch(function(e) {
-      console.log(e);
-    });
-  });
-});
+
+
+
+// var FlexiTimeToken = artifacts.require("./FlexiTimeToken.sol");
+//
+// contract('FlexiTimeToken', function(accounts) {
+//   it("should have beneficiary as account[1]", function() {
+//     return FlexiTimeToken.deployed().then(function(instance) {
+//       return instance.beneficiary.call();
+//     }).then(function(beneficiary) {
+//       assert.equal(beneficiary, accounts[1], "Beneficiary must be same account[1]");
+//     }).catch(function(e) {
+//       console.log(e);
+//     });
+//   });
+// });
+//
+// contract('FlexiTimeToken', function(accounts) {
+//   it("should show task count as 3", function() {
+//     return FlexiTimeToken.deployed().then(function(instance) {
+//       instance.createTask('task1', {from: accounts[1]});
+//       instance.createTask('task2', {from: accounts[1]});
+//       instance.createTask('task3', {from: accounts[1]});
+//       return instance.taskCount.call();
+//     }).then(function(count) {
+//       assert.equal(count.toNumber(), 3, "Task count should be equal to 3");
+//     }).catch(function(e) {
+//       console.log(e);
+//     });
+//   });
+// });
 
 // contract('FlexiTimeToken', function(accounts) {
 //   it("should create task3", function() {

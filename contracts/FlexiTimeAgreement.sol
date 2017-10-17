@@ -6,6 +6,7 @@ import "./HashLib.sol";
 
 /* Created by factory in order to sign agreement and generate token contract */
 contract FlexiTimeAgreement {
+  event Token(FlexiTimeToken token);
 
   enum States { Created, Proposed, Withdrawn, Accepted, Rejected }
 
@@ -79,14 +80,14 @@ contract FlexiTimeAgreement {
   }
 
   /* beneficiary is able to agree to agreement proposal i.e. sign it, passing docId ass safety check*/
-  function accept(bytes32 _contentHash) onlyBeneficiary onlyProposed returns (FlexiTimeToken _token) {
+  function accept(bytes32 _contentHash) onlyBeneficiary onlyProposed {
     require(HashLib.matches(contentHash, _contentHash)); // matches double hash in agreement to single hash in token
 
     contentHash = _contentHash;
     token = new FlexiTimeToken();
     state = States.Accepted;
 
-    return token;
+    Token(token);
   }
 
   function reject() onlyBeneficiary onlyProposed {
