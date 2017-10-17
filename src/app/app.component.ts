@@ -54,6 +54,7 @@ export class AppComponent implements OnInit {
     }).catch((e) => {
       this.openSnackBar("Error creating agreement; see log.", "Dismiss");
       console.log(e);
+      
     });
   }
 
