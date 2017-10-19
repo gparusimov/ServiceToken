@@ -26,4 +26,8 @@ contract FlexiTimeFactory {
     agreements.push(agreement);
     Agreement(agreement, msg.sender, issuer, beneficiary);
   }
+
+  function getAgreements() returns (FlexiTimeAgreement[] _agreements) {
+    return agreements;
+  }
 }

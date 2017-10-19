@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Web3Service } from "./web3/web3.service";
 import { MatSnackBar } from '@angular/material';
+import { Subject } from "rxjs";
 
 export class Agreement {
   constructor(
@@ -27,10 +28,11 @@ export class Agreement {
 
 export class AppComponent implements OnInit {
 
-  accounts : string[];
-  account: string;
-  Factory : Promise<any>;
-  agreement: Agreement;
+  private accounts : string[];
+  private account: string;
+  private Factory: Promise<any>;
+  private agreement: Agreement;
+  private agreements: string[];
 
   constructor(private web3Service : Web3Service, private snackBar: MatSnackBar) {
     console.log("AccountComponent constructor: " + web3Service);
@@ -38,8 +40,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.watchAccount();
-
-    this.newAgreement();
 
     this.Factory = new Promise((resolve, reject) => {
       setInterval(() => {
@@ -49,11 +49,19 @@ export class AppComponent implements OnInit {
       }, 100)
     });
 
-    this.watchAgreements();
-
     // TODO: this is bad form and needs to change
-    window['snackBar'] = this.snackBar;
+    window['agrementEventsObservable'] = new Subject<string[]>();
+
+    this.newAgreement();
+    this.watchAgreements();
+    this.getAgreements();
+    this.watchAgreementEvents();
   }
+
+  // TODO: Chrome appears to hang after too many refreshes, suspect need to stop watching, but line below not working
+  // ngOnDestroy() {
+  //   this.filter.stopWatching();
+  // }
 
   watchAgreements() {
     this.Factory.then((contract) => {
@@ -62,11 +70,22 @@ export class AppComponent implements OnInit {
       return factoryInstance.Agreement({fromBlock: "latest"});
     }).then ((agreements) => {
       agreements.watch(function(error, result) {
-      if (error == null) {
-        window['snackBar'].open("Agreement " + result.args["agreement"] + " created.", "Dismiss", {
-          duration: 2000,
-        });
-      }})
+        if (error == null) {
+          window['agrementEventsObservable'].next(result.args);
+        }
+      })
+    });
+  }
+
+  getAgreements() {
+    this.Factory.then((contract) => {
+      return contract.deployed();
+    }).then((factoryInstance) => {
+      return factoryInstance.getAgreements.call();
+    }).then((agreements) => {
+      this.agreements = agreements;
+    }).catch(function (e) {
+      console.log(e);
     });
   }
 
@@ -83,8 +102,8 @@ export class AppComponent implements OnInit {
         this.agreement.totalSupply,
         this.toEpoch(this.agreement.validFromDate, this.agreement.validFromHour, this.agreement.validFromMinute),
         this.toEpoch(this.agreement.expiresEndDate, this.agreement.expiresEndHour, this.agreement.expiresEndMinute),
-        this.account,
-        this.account,
+        this.agreement.issuerAddress,
+        this.agreement.beneficiaryAddress,
         {from: this.account}
       );
     }).then((success) => {
@@ -105,6 +124,13 @@ export class AppComponent implements OnInit {
     this.web3Service.accountsObservable.subscribe((accounts) => {
       this.accounts = accounts;
       this.account = accounts[0];
+    });
+  }
+
+  watchAgreementEvents() {
+    window["agrementEventsObservable"].subscribe((args) => {
+      this.openSnackBar("Created " + args.agreement + " contract.", "Dismiss");
+      this.getAgreements();
     });
   }
 
@@ -135,13 +161,5 @@ export class AppComponent implements OnInit {
 
   toEpoch(date: Date, hour: number, minute: number) {
     return Math.round(date.getTime() / 1000) + hour * 60 * 60 + minute * 60;
-  }
-
-  tester1() {
-    return this.toEpoch(this.agreement.validFromDate, this.agreement.validFromHour, this.agreement.validFromMinute);
-  }
-
-  tester2() {
-    return this.toEpoch(this.agreement.expiresEndDate, this.agreement.expiresEndHour, this.agreement.expiresEndMinute);
   }
 }

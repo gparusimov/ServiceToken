@@ -12,15 +12,12 @@
 <mat-card>
   <mat-card>
     <mat-card-title>FlexiTime Factory</mat-card-title>
-    <mat-card-subtitle>View Agreement</mat-card-subtitle>
-
+    <mat-card-subtitle>View Agreements</mat-card-subtitle>
     <mat-card-content>
-      List of agreements
+      <mat-list>
+        <mat-list-item *ngFor="let agreement of agreements"> {{agreement}}</mat-list-item>
+      </mat-list>
     </mat-card-content>
-
-    <mat-card-actions>
-      <button mat-raised-button (click)="fetch()">Fetch</button>
-    </mat-card-actions>
   </mat-card>
 
   <mat-card>
@@ -77,8 +74,5 @@
         <button mat-raised-button type="submit" [disabled]="!agreementForm.form.valid" (ngSubmit)="onSubmit()" >Create</button>
       </form>
     </mat-card-content>
-    <mat-card-actions>
-      <div>{{ tester1() }} {{ tester2() }}</div>
-    </mat-card-actions>
   </mat-card>
 </mat-card>
