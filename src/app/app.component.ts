@@ -32,7 +32,7 @@ export class AppComponent implements OnInit {
   Factory : Promise<any>;
   agreement: Agreement;
 
-  constructor(private web3Service : Web3Service, public snackBar: MatSnackBar) {
+  constructor(private web3Service : Web3Service, private snackBar: MatSnackBar) {
     console.log("AccountComponent constructor: " + web3Service);
   }
 
@@ -47,6 +47,26 @@ export class AppComponent implements OnInit {
           resolve(this.web3Service.FlexiTimeFactory);
         }
       }, 100)
+    });
+
+    this.watchAgreements();
+
+    // TODO: this is bad form and needs to change
+    window['snackBar'] = this.snackBar;
+  }
+
+  watchAgreements() {
+    this.Factory.then((contract) => {
+      return contract.deployed();
+    }).then ((factoryInstance) => {
+      return factoryInstance.Agreement({fromBlock: "latest"});
+    }).then ((agreements) => {
+      agreements.watch(function(error, result) {
+      if (error == null) {
+        window['snackBar'].open("Agreement " + result.args["agreement"] + " created.", "Dismiss", {
+          duration: 2000,
+        });
+      }})
     });
   }
 
