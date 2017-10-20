@@ -40,14 +40,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.watchAccount();
-
-    this.Factory = new Promise((resolve, reject) => {
-      setInterval(() => {
-        if (this.web3Service.ready) {
-          resolve(this.web3Service.FlexiTimeFactory);
-        }
-      }, 100)
-    });
+    this.setFactory();
 
     // TODO: this is bad form and needs to change
     window['agrementEventsObservable'] = new Subject<string[]>();
@@ -74,6 +67,16 @@ export class AppComponent implements OnInit {
           window['agrementEventsObservable'].next(result.args);
         }
       })
+    });
+  }
+
+  setFactory() {
+    this.Factory = new Promise((resolve, reject) => {
+      setInterval(() => {
+        if (this.web3Service.ready) {
+          resolve(this.web3Service.FlexiTimeFactory);
+        }
+      }, 100)
     });
   }
 
@@ -124,13 +127,15 @@ export class AppComponent implements OnInit {
     this.web3Service.accountsObservable.subscribe((accounts) => {
       this.accounts = accounts;
       this.account = accounts[0];
+      this.setFactory() // update factory in case user swtiches to a different wallet
+      this.getAgreements(); // update agreements array in case user swtiches to a different wallet
     });
   }
 
   watchAgreementEvents() {
     window["agrementEventsObservable"].subscribe((args) => {
       this.openSnackBar("Created " + args.agreement + " contract.", "Dismiss");
-      this.getAgreements();
+      this.getAgreements(); // update if someone created a new agreement
     });
   }
 
