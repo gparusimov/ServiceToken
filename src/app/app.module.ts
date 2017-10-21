@@ -1,10 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
-import { MatToolbarModule, MatIconModule, MatButtonModule, MatTooltipModule, MatFormFieldModule, MatInputModule, MatDatepickerModule, MatNativeDateModule, MatCardModule, MatSnackBarModule, MatListModule } from '@angular/material';
-import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
-import { Web3Module } from './web3/web3.module';
+import { AgreementFormModule } from './agreement/agreement-form/agreement-form.module';
+import { AgreementListModule } from './agreement/agreement-list/agreement-list.module';
+import { MatToolbarModule, MatIconModule, MatButtonModule, MatTooltipModule, MatCardModule } from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -13,19 +13,13 @@ import { Web3Module } from './web3/web3.module';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    FormsModule,
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
     MatTooltipModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
     MatCardModule,
-    MatSnackBarModule,
-    MatListModule,
-    Web3Module
+    AgreementFormModule,
+    AgreementListModule
   ],
   providers: [],
   bootstrap: [AppComponent]
