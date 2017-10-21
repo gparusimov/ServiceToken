@@ -25,7 +25,7 @@ export class Web3Service {
     this.FlexiTimeAgreement = contract(agreement_artifacts);
     this.FlexiTimeToken = contract(token_artifacts);
     this.FlexiTimeTask = contract(task_artifacts);
-    setInterval(() => this.checkAndRefreshWeb3(), 100);
+    setInterval(() => this.checkAndRefreshWeb3(), 1000);
   }
 
   private checkAndRefreshWeb3() {
