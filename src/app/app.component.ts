@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Web3Service } from "./web3/web3.service";
 import { MatSnackBar } from '@angular/material';
 
@@ -25,13 +25,14 @@ export class Agreement {
   styleUrls: ['./app.component.css']
 })
 
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
 
   private accounts : string[];
   private account: string;
   private Factory: Promise<any>;
   private agreement: Agreement;
   private agreements: string[];
+  private filter: any;
 
   constructor(private web3Service : Web3Service, private snackBar: MatSnackBar) {
     console.log("AccountComponent constructor: " + web3Service);
@@ -45,10 +46,9 @@ export class AppComponent implements OnInit {
     this.getAgreements();
   }
 
-  // TODO: Chrome appears to hang after too many refreshes, suspect need to stop watching, but line below not working
-  // ngOnDestroy() {
-  //   this.filter.stopWatching();
-  // }
+  ngOnDestroy() {
+    this.filter.stopWatching();
+  }
 
   watchAgreements() {
     this.Factory.then((contract) => {
@@ -56,7 +56,8 @@ export class AppComponent implements OnInit {
     }).then ((factoryInstance) => {
       return factoryInstance.Agreement({fromBlock: "latest"});
     }).then ((agreements) => {
-      agreements.watch(this.agreementEvent)
+      this.filter = agreements;
+      this.filter.watch(this.agreementEvent);
     });
   }
 
