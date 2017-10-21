@@ -71,8 +71,7 @@ export class AgreementListComponent implements OnInit, OnDestroy {
     this.web3Service.accountsObservable.subscribe((accounts) => {
       this.accounts = accounts;
       this.account = accounts[0];
-      this.setFactory() // update factory in case user swtiches to a different wallet
-      this.setAgreements(); // update agreements array in case user swtiches to a different wallet
+      this.setAgreements(); // update agreements array in case user swtiches to a different account
     });
   }
 
