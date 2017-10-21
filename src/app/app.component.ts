@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Web3Service } from "./web3/web3.service";
 import { MatSnackBar } from '@angular/material';
-import { Subject } from "rxjs";
 
 export class Agreement {
   constructor(
@@ -41,14 +40,9 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.watchAccount();
     this.setFactory();
-
-    // TODO: this is bad form and needs to change
-    window['agrementEventsObservable'] = new Subject<string[]>();
-
     this.newAgreement();
     this.watchAgreements();
     this.getAgreements();
-    this.watchAgreementEvents();
   }
 
   // TODO: Chrome appears to hang after too many refreshes, suspect need to stop watching, but line below not working
@@ -62,13 +56,16 @@ export class AppComponent implements OnInit {
     }).then ((factoryInstance) => {
       return factoryInstance.Agreement({fromBlock: "latest"});
     }).then ((agreements) => {
-      agreements.watch(function(error, result) {
-        if (error == null) {
-          window['agrementEventsObservable'].next(result.args);
-        }
-      })
+      agreements.watch(this.agreementEvent)
     });
   }
+
+  agreementEvent = (error, result) => {
+    if (error == null) {
+      this.openSnackBar("Agreement " + result.args.agreement + " created.", "Dismiss");
+      this.getAgreements();
+    }
+  };
 
   setFactory() {
     this.Factory = new Promise((resolve, reject) => {
@@ -129,13 +126,6 @@ export class AppComponent implements OnInit {
       this.account = accounts[0];
       this.setFactory() // update factory in case user swtiches to a different wallet
       this.getAgreements(); // update agreements array in case user swtiches to a different wallet
-    });
-  }
-
-  watchAgreementEvents() {
-    window["agrementEventsObservable"].subscribe((args) => {
-      this.openSnackBar("Created " + args.agreement + " contract.", "Dismiss");
-      this.getAgreements(); // update if someone created a new agreement
     });
   }
 
