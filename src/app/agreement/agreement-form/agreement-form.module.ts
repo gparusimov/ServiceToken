@@ -4,6 +4,7 @@ import { AgreementFormComponent } from './agreement-form.component';
 import { Web3Module } from '../../web3/web3.module';
 import { MatSnackBarModule, MatCardModule, MatButtonModule, MatInputModule, MatFormFieldModule, MatDatepickerModule, MatNativeDateModule  } from '@angular/material';
 import { FormsModule } from '@angular/forms';
+import { AgreementFormRoutingModule } from './agreement-form-routing.module';
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ import { FormsModule } from '@angular/forms';
     MatInputModule,
     MatFormFieldModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    AgreementFormRoutingModule
   ],
   declarations: [AgreementFormComponent],
   exports: [AgreementFormComponent]

@@ -7,9 +7,9 @@ import { AgreementViewModule } from './agreement/agreement-view/agreement-view.m
 import { AgreementFormModule } from './agreement/agreement-form/agreement-form.module';
 import { AgreementListModule } from './agreement/agreement-list/agreement-list.module';
 import { RouterModule, Routes } from '@angular/router';
-import { AgreementViewComponent } from './agreement/agreement-view/agreement-view.component'
-import { AgreementListComponent } from './agreement/agreement-list/agreement-list.component'
-import { AgreementFormComponent } from './agreement/agreement-form/agreement-form.component';
+import { TokenViewModule } from './token/token-view/token-view.module';
+import { AppRoutingModule } from './app-routing.module';
+import { Web3Module } from "./web3/web3.module";
 
 @NgModule({
   declarations: [
@@ -19,32 +19,16 @@ import { AgreementFormComponent } from './agreement/agreement-form/agreement-for
     AgreementFormModule,
     AgreementListModule,
     AgreementViewModule,
-    RouterModule.forRoot([
-      {
-        path: '',
-        redirectTo: '/agreements',
-        pathMatch: 'full'
-      },
-      {
-        path: 'agreements/:address',
-        component: AgreementViewComponent
-      },
-      {
-        path: 'agreements',
-        component: AgreementListComponent
-      },
-      {
-        path: 'factory/create_agreement',
-        component: AgreementFormComponent
-      }
-    ]),
+    AppRoutingModule,
     BrowserModule,
     BrowserAnimationsModule,
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
     MatTooltipModule,
-    MatCardModule
+    MatCardModule,
+    TokenViewModule,
+    Web3Module
   ],
   providers: [],
   bootstrap: [AppComponent]

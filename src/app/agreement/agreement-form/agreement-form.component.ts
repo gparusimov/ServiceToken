@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Web3Service } from "../../web3/web3.service";
 import { MatSnackBar } from '@angular/material';
 import { Location } from '@angular/common';
+import { Router } from '@angular/router';
 
 export class Agreement {
   constructor(
@@ -33,13 +34,26 @@ export class AgreementFormComponent implements OnInit  {
   private Factory: Promise<any>;
   private accounts : string[];
   private account: string;
+  private submitted: boolean;
+  private confirmed: boolean;
+  private status: string;
+  private transaction: string;
 
-  constructor(private web3Service : Web3Service, private snackBar: MatSnackBar, private location: Location) { }
+  constructor(
+    private web3Service : Web3Service,
+    private snackBar: MatSnackBar,
+    private location: Location,
+    private router: Router
+  ) { }
 
   ngOnInit() {
     this.watchAccount();
     this.setFactory();
-    this.newAgreement();
+    this.agreement = new Agreement(null, null, null, null, new Date(), 0, 0, new Date(), 0, 0, this.account, null);
+    this.submitted = false;
+    this.confirmed = false;
+    this.status = "Creating transaction.";
+    this.transaction = "";
   }
 
   setFactory() {
@@ -52,11 +66,10 @@ export class AgreementFormComponent implements OnInit  {
     });
   }
 
-  newAgreement() {
-    this.agreement = new Agreement(null, null, null, null, new Date(), 0, 0, new Date(), 0, 0, this.account, null);
-  }
-
   onSubmit() {
+    this.submitted = true;
+    this.status = "Confirming transaction.";
+
     this.Factory.then((contract) => {
       return contract.deployed();
     }).then((factoryInstance) => {
@@ -74,13 +87,17 @@ export class AgreementFormComponent implements OnInit  {
     }).then((success) => {
       if (!success) {
         this.snackBar.open("Transaction failed!", "Dismiss", { duration: 2000 });
+        this.status = "Transaction failed!";
       }
       else {
-        this.newAgreement();
-        this.snackBar.open("Transaction complete!", "Dismiss", { duration: 2000 });
+        this.snackBar.open("Transaction submitted!", "Dismiss", { duration: 2000 });
+        this.status = "Transaction submitted.";
+        this.transaction = success;
+        this.confirmed = true;
       }
     }).catch((e) => {
       this.snackBar.open("Error creating agreement; see log.", "Dismiss", { duration: 2000 });
+      this.status = "Error creating agreement; see log.";
       console.log(e);
     });
   }
