@@ -26,7 +26,11 @@ export class AgreementListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.filter.stopWatching();
+    this.filter.stopWatching((error, result) => {
+      if (error == null) {
+        console.log("stopped watching");
+      }
+    });
   }
 
   setFactory() {
@@ -57,13 +61,13 @@ export class AgreementListComponent implements OnInit, OnDestroy {
     }).then ((factoryInstance) => {
       return factoryInstance.Agreement({fromBlock: "latest"});
     }).then ((agreements) => {
-      this.filter = agreements;
-      this.filter.watch((error, result) => {
+      agreements.watch((error, result) => {
         if (error == null) {
           this.snackBar.open("Agreement " + result.args.agreement + " created.", "Dismiss", { duration: 2000 });
           this.setAgreements();
         }
       });
+      this.filter = agreements;
     });
   }
 

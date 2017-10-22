@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Web3Service } from "../../web3/web3.service";
 import { MatSnackBar } from '@angular/material';
+import { Location } from '@angular/common';
 
 export class Agreement {
   constructor(
@@ -33,7 +34,7 @@ export class AgreementFormComponent implements OnInit  {
   private accounts : string[];
   private account: string;
 
-  constructor(private web3Service : Web3Service, private snackBar: MatSnackBar) { }
+  constructor(private web3Service : Web3Service, private snackBar: MatSnackBar, private location: Location) { }
 
   ngOnInit() {
     this.watchAccount();
@@ -93,5 +94,9 @@ export class AgreementFormComponent implements OnInit  {
       this.accounts = accounts;
       this.account = accounts[0];
     });
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }

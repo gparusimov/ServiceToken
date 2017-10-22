@@ -2,7 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgreementListComponent } from './agreement-list.component';
 import { Web3Module } from '../../web3/web3.module';
-import { MatSnackBarModule, MatCardModule, MatListModule } from '@angular/material';
+import { MatSnackBarModule, MatCardModule, MatListModule, MatButtonModule } from '@angular/material';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   imports: [
@@ -10,7 +11,9 @@ import { MatSnackBarModule, MatCardModule, MatListModule } from '@angular/materi
     Web3Module,
     MatSnackBarModule,
     MatCardModule,
-    MatListModule
+    MatListModule,
+    MatButtonModule,
+    RouterModule
   ],
   declarations: [AgreementListComponent],
   exports: [AgreementListComponent]

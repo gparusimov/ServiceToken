@@ -52,4 +52,7 @@
       <button mat-raised-button type="submit" [disabled]="!agreementForm.form.valid" (ngSubmit)="onSubmit()" >Create</button>
     </form>
   </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button (click)="goBack()">Back</button>
+  </mat-card-actions>
 </mat-card>
