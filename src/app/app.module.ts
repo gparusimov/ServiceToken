@@ -1,30 +1,33 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
-import { MatToolbarModule, MatIconModule, MatButtonModule, MatTooltipModule, MatFormFieldModule, MatInputModule, MatDatepickerModule, MatNativeDateModule, MatCardModule, MatSnackBarModule, MatListModule } from '@angular/material';
-import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
-import { Web3Module } from './web3/web3.module';
+import { MatToolbarModule, MatIconModule, MatButtonModule, MatTooltipModule, MatCardModule } from '@angular/material';
+import { AgreementViewModule } from './agreement/agreement-view/agreement-view.module';
+import { AgreementFormModule } from './agreement/agreement-form/agreement-form.module';
+import { AgreementListModule } from './agreement/agreement-list/agreement-list.module';
+import { RouterModule, Routes } from '@angular/router';
+import { TokenViewModule } from './token/token-view/token-view.module';
+import { AppRoutingModule } from './app-routing.module';
+import { Web3Module } from "./web3/web3.module";
 
 @NgModule({
   declarations: [
     AppComponent
   ],
   imports: [
+    AgreementFormModule,
+    AgreementListModule,
+    AgreementViewModule,
+    AppRoutingModule,
     BrowserModule,
     BrowserAnimationsModule,
-    FormsModule,
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
     MatTooltipModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
     MatCardModule,
-    MatSnackBarModule,
-    MatListModule,
+    TokenViewModule,
     Web3Module
   ],
   providers: [],
