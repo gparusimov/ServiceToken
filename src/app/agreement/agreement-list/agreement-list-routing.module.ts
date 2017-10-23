@@ -4,7 +4,7 @@ import { AgreementListComponent } from './agreement-list.component'
 
 const routes: Routes = [
   {
-    path: 'agreements',
+    path: 'factory/agreements',
     component: AgreementListComponent
   }
 ];

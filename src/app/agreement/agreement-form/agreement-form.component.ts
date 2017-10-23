@@ -1,25 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Web3Service } from "../../web3/web3.service";
 import { MatSnackBar } from '@angular/material';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
-
-export class Agreement {
-  constructor(
-    public tokenName: string,
-    public tokenSymbol: string,
-    public decimalPlaces: number,
-    public totalSupply: number,
-    public validFromDate: Date,
-    public validFromHour: number,
-    public validFromMinute: number,
-    public expiresEndDate: Date,
-    public expiresEndHour: number,
-    public expiresEndMinute: number,
-    public issuerAddress: string,
-    public beneficiaryAddress: string
-  ) { }
-}
+import { Agreement } from "../agreement";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: 'app-agreement-form',
@@ -27,7 +12,7 @@ export class Agreement {
   styleUrls: ['./agreement-form.component.css']
 })
 
-export class AgreementFormComponent implements OnInit  {
+export class AgreementFormComponent implements OnInit, OnDestroy  {
 
   @Input() agreement: Agreement;
 
@@ -38,6 +23,7 @@ export class AgreementFormComponent implements OnInit  {
   private confirmed: boolean;
   private status: string;
   private transaction: string;
+  private subscription: Subscription;
 
   constructor(
     private web3Service : Web3Service,
@@ -54,6 +40,10 @@ export class AgreementFormComponent implements OnInit  {
     this.confirmed = false;
     this.status = "Creating transaction.";
     this.transaction = "";
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   setFactory() {
@@ -107,7 +97,7 @@ export class AgreementFormComponent implements OnInit  {
   }
 
   watchAccount() {
-    this.web3Service.accountsObservable.subscribe((accounts) => {
+    this.subscription = this.web3Service.accountsObservable.subscribe((accounts) => {
       this.accounts = accounts;
       this.account = accounts[0];
     });

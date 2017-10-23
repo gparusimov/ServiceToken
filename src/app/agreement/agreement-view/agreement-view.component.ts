@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Location } from '@angular/common';
 import 'rxjs/add/operator/switchMap';
@@ -9,7 +9,7 @@ import 'rxjs/add/operator/switchMap';
   styleUrls: ['./agreement-view.component.css']
 })
 
-export class AgreementViewComponent implements OnInit {
+export class AgreementViewComponent implements OnInit, OnDestroy {
 
   public agreement: string;
 
@@ -20,6 +20,10 @@ export class AgreementViewComponent implements OnInit {
     this.route.paramMap
     .switchMap((params: ParamMap) => this.getAgreement(params.get('address')))
     .subscribe(address => this.agreement = address);
+  }
+
+  ngOnDestroy() {
+    
   }
 
   getAgreement(address: string) {
