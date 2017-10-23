@@ -1,7 +1,7 @@
 import { Injectable, OnInit, Output, EventEmitter } from '@angular/core';
 import { default as Web3 } from 'web3';
 import { WindowRefService } from "../window-ref/window-ref.service";
-import { Subject } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 import { default as contract } from 'truffle-contract';
 import factory_artifacts from '../../../build/contracts/FlexiTimeFactory.json';
 import agreement_artifacts from '../../../build/contracts/FlexiTimeAgreement.json';
@@ -18,17 +18,18 @@ export class Web3Service {
   public FlexiTimeAgreement : any;
   public FlexiTimeToken : any;
   public FlexiTimeTask : any;
-  public accountsObservable = new Subject<string[]>();
+  public accountsObservable = new BehaviorSubject<string[]>([]);
 
   constructor(private windowRef : WindowRefService) {
     this.FlexiTimeFactory = contract(factory_artifacts);
     this.FlexiTimeAgreement = contract(agreement_artifacts);
     this.FlexiTimeToken = contract(token_artifacts);
     this.FlexiTimeTask = contract(task_artifacts);
-    setInterval(() => this.checkAndRefreshWeb3(), 1000);
+    setInterval(() => this.checkAndRefreshWeb3(), 100);
   }
 
   private checkAndRefreshWeb3() {
+
     if (this.ready) {
       this.refreshAccounts();
       return;

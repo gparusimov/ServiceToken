@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Web3Service } from "../../web3/web3.service";
 import { MatSnackBar } from '@angular/material';
+import { Subscription } from "rxjs";
 
 @Component({
   selector: 'app-agreement-list',
@@ -15,14 +16,14 @@ export class AgreementListComponent implements OnInit, OnDestroy {
   private agreements: string[];
   private accounts : string[];
   private account: string;
+  private subscription: Subscription;
 
   constructor(private web3Service : Web3Service, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
-    this.watchAccount();
     this.setFactory();
+    this.watchAccount();
     this.watchAgreementEvents();
-    this.setAgreements();
   }
 
   ngOnDestroy() {
@@ -31,6 +32,7 @@ export class AgreementListComponent implements OnInit, OnDestroy {
         console.log("stopped watching");
       }
     });
+    this.subscription.unsubscribe();
   }
 
   setFactory() {
@@ -72,7 +74,7 @@ export class AgreementListComponent implements OnInit, OnDestroy {
   }
 
   watchAccount() {
-    this.web3Service.accountsObservable.subscribe((accounts) => {
+    this.subscription = this.web3Service.accountsObservable.subscribe((accounts) => {
       this.accounts = accounts;
       this.account = accounts[0];
       this.setAgreements(); // update agreements array in case user swtiches to a different account
