@@ -1,10 +1,26 @@
-<mat-card>
+<mat-card *ngIf="agreement">
   <mat-card-title>FlexiTime Factory</mat-card-title>
   <mat-card-subtitle>View Agreement</mat-card-subtitle>
   <mat-card-content>
-    Agreement {{ agreement }}
+    <div><label>Address: </label> {{ agreement.address }} </div>
+    <div><label>Name: </label> {{ agreement.name }} </div>
+    <div><label>Symbol: </label> {{ agreement.symbol }} </div>
+    <div><label>Decimals: </label> {{ agreement.decimals }} </div>
+    <div><label>Total Supply: </label> {{ agreement.totalSupply }} </div>
+    <div><label>Valid From: </label> {{ agreement.validFrom | epoch | date:'y-MMMM-dd hh:mm' }} </div>
+    <div><label>Expires End: </label> {{ agreement.expiresEnd | epoch | date:'y-MMMM-dd hh:mm' }} </div>
+    <div><label>Content Hash: </label> {{ agreement.contentHash }} </div>
+    <div><label>Issuer: </label> {{ agreement.issuer }} </div>
+    <div><label>Beneficiary: </label> {{ agreement.beneficiary }} </div>
+    <div><label>State: </label> {{ agreement.state | state }} </div>
   </mat-card-content>
   <mat-card-actions>
     <button mat-raised-button (click)="goBack()">Back</button>
+    <span *ngIf="agreement.state">
+      <span [hidden]='!isIssuerInState("Created")'><button mat-raised-button (click)="propose()">Propose</button></span>
+      <span [hidden]='!isIssuerInState("Proposed")'><button mat-raised-button (click)="withdraw()">Withdraw</button></span>
+      <span [hidden]='!isBeneficiaryInState("Proposed")'><button mat-raised-button (click)="accept()">Accept</button></span>
+      <span [hidden]='!isBeneficiaryInState("Proposed")'><button hidden=true mat-raised-button (click)="reject()">Reject</button></span>
+    </span>
   </mat-card-actions>
 </mat-card>
