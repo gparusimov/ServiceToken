@@ -3,8 +3,24 @@ import { Web3Service } from "../../web3/web3.service";
 import { MatSnackBar } from '@angular/material';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
-import { Agreement } from "../agreement";
 import { Subscription } from "rxjs";
+
+export class Agreement {
+  constructor(
+    public tokenName: string,
+    public tokenSymbol: string,
+    public decimalPlaces: number,
+    public totalSupply: number,
+    public validFromDate: Date,
+    public validFromHour: number,
+    public validFromMinute: number,
+    public expiresEndDate: Date,
+    public expiresEndHour: number,
+    public expiresEndMinute: number,
+    public issuerAddress: string,
+    public beneficiaryAddress: string,
+  ) { }
+}
 
 @Component({
   selector: 'app-agreement-form',
@@ -35,7 +51,9 @@ export class AgreementFormComponent implements OnInit, OnDestroy  {
   ngOnInit() {
     this.watchAccount();
     this.setFactory();
-    this.agreement = new Agreement(null, null, null, null, new Date(), 0, 0, new Date(), 0, 0, this.account, null);
+    this.agreement = new Agreement(
+      null, null, null, null, new Date(), 0, 0, new Date(), 0, 0, this.account, null
+    );
     this.submitted = false;
     this.confirmed = false;
     this.status = "Creating transaction.";
