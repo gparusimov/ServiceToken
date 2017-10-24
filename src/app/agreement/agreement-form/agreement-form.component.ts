@@ -37,9 +37,12 @@ export class AgreementFormComponent implements OnInit, OnDestroy  {
   private account: string;
   private submitted: boolean;
   private confirmed: boolean;
+  private created: boolean;
   private status: string;
   private transaction: string;
   private subscription: Subscription;
+  private filter: any;
+  private agreementHash: string;
 
   constructor(
     private web3Service : Web3Service,
@@ -51,17 +54,45 @@ export class AgreementFormComponent implements OnInit, OnDestroy  {
   ngOnInit() {
     this.watchAccount();
     this.setFactory();
+    this.watchAgreementEvents();
     this.agreement = new Agreement(
       null, null, null, null, new Date(), 0, 0, new Date(), 0, 0, this.account, null
     );
     this.submitted = false;
     this.confirmed = false;
+    this.created = false;
     this.status = "Creating transaction.";
     this.transaction = "";
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+    this.filter.stopWatching((error, result) => {
+      if (error == null) {
+        console.log("stopped watching");
+      }
+    });
+  }
+
+  watchAgreementEvents() {
+    this.Factory.then((contract) => {
+      return contract.deployed();
+    }).then ((factoryInstance) => {
+      return factoryInstance.Agreement({fromBlock: "latest"});
+    }).then ((agreements) => {
+      agreements.watch((error, result) => {
+        if (error == null) {
+          console.log(result);
+          if (this.transaction === result.transactionHash) {
+            this.snackBar.open("Agreement " + result.args.agreement + " created.", "Dismiss", { duration: 2000 });
+            this.created = true;
+            this.agreementHash = result.args.agreement;
+            this.status = "Agreeement created.";
+          }
+        }
+      });
+      this.filter = agreements;
+    });
   }
 
   setFactory() {

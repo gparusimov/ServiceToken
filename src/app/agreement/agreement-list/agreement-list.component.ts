@@ -65,6 +65,7 @@ export class AgreementListComponent implements OnInit, OnDestroy {
     }).then ((agreements) => {
       agreements.watch((error, result) => {
         if (error == null) {
+          console.log(result);
           this.snackBar.open("Agreement " + result.args.agreement + " created.", "Dismiss", { duration: 2000 });
           this.setAgreements();
         }

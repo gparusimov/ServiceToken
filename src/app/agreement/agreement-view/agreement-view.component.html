@@ -9,18 +9,35 @@
     <div><label>Total Supply: </label> {{ agreement.totalSupply }} </div>
     <div><label>Valid From: </label> {{ agreement.validFrom | epoch | date:'y-MMMM-dd hh:mm' }} </div>
     <div><label>Expires End: </label> {{ agreement.expiresEnd | epoch | date:'y-MMMM-dd hh:mm' }} </div>
-    <div><label>Content Hash: </label> {{ agreement.contentHash }} </div>
     <div><label>Issuer: </label> {{ agreement.issuer }} </div>
     <div><label>Beneficiary: </label> {{ agreement.beneficiary }} </div>
     <div><label>State: </label> {{ agreement.state | state }} </div>
+
+    <div [hidden]='isIssuerInState("Created")'>
+      <div><label>Content Hash: </label> {{ agreement.contentHash }} </div>
+    </div>
+    <div [hidden]='!isIssuerInState("Created")'>
+      <span [hidden]='this.changed'>
+        <form class="ftt-form" #agreementForm="ngForm" (ngSubmit)="propose()">
+          <mat-form-field class="ftt-full-width">
+            <input matInput placeholder="Hashed hash" [(ngModel)]="agreement.contentHash" name="contentHash" required>
+          </mat-form-field>
+          <button mat-raised-button type="submit" [disabled]="!agreementForm.form.valid">Propose</button>
+        </form>
+      </span>
+    </div>
+    <span [hidden]='!isIssuerInState("Proposed")'>
+      <button mat-raised-button (click)="withdraw()">Withdraw</button>
+    </span>
+    <span [hidden]='!isBeneficiaryInState("Proposed")'>
+      <button mat-raised-button (click)="accept()">Accept</button>
+    </span>
+    <span [hidden]='!isBeneficiaryInState("Proposed")'>
+      <button hidden=true mat-raised-button (click)="reject()">Reject</button>
+    </span>
   </mat-card-content>
   <mat-card-actions>
     <button mat-raised-button (click)="goBack()">Back</button>
-    <span *ngIf="agreement.state">
-      <span [hidden]='!isIssuerInState("Created")'><button mat-raised-button (click)="propose()">Propose</button></span>
-      <span [hidden]='!isIssuerInState("Proposed")'><button mat-raised-button (click)="withdraw()">Withdraw</button></span>
-      <span [hidden]='!isBeneficiaryInState("Proposed")'><button mat-raised-button (click)="accept()">Accept</button></span>
-      <span [hidden]='!isBeneficiaryInState("Proposed")'><button hidden=true mat-raised-button (click)="reject()">Reject</button></span>
-    </span>
+    <button mat-raised-button (click)="print()">Print</button>
   </mat-card-actions>
 </mat-card>

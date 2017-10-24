@@ -6,9 +6,10 @@ import "./HashLib.sol";
 
 /* Created by factory in order to sign agreement and generate token contract */
 contract FlexiTimeAgreement {
-  event Token(FlexiTimeToken token);
 
   enum States { Created, Proposed, Withdrawn, Accepted, Rejected }
+
+  event StateChange(States indexed oldState, States indexed newState);
 
   States public state;
   FlexiTimeToken public token; // link to the created token
@@ -72,11 +73,13 @@ contract FlexiTimeAgreement {
   function propose(bytes32 hashedHash) onlyIssuer onlyCreated {
     contentHash = hashedHash;
     state = States.Proposed;
+    StateChange(States.Created, States.Proposed);
   }
 
   /* allow issuer to withdraw aggreement proposal before it is accepted */
   function withdraw() onlyIssuer onlyProposed {
     state = States.Withdrawn;
+    StateChange(States.Proposed, States.Withdrawn);
   }
 
   /* beneficiary is able to agree to agreement proposal i.e. sign it, passing docId ass safety check*/
@@ -86,11 +89,11 @@ contract FlexiTimeAgreement {
     contentHash = _contentHash;
     token = new FlexiTimeToken();
     state = States.Accepted;
-
-    Token(token);
+    StateChange(States.Proposed, States.Accepted);
   }
 
   function reject() onlyBeneficiary onlyProposed {
     state = States.Rejected;
+    StateChange(States.Proposed, States.Rejected);
   }
 }

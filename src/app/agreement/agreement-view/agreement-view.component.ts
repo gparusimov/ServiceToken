@@ -1,9 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Location } from '@angular/common';
 import 'rxjs/add/operator/switchMap';
 import { Subscription } from "rxjs";
 import { Web3Service } from "../../web3/web3.service";
+import { default as pdfMake } from 'pdfmake/build/pdfmake';
+import { default as vfs } from 'pdfmake/build/vfs_fonts';
+import { MatSnackBar } from '@angular/material';
 
 export class Agreement {
   constructor(
@@ -29,16 +32,20 @@ export class Agreement {
 
 export class AgreementViewComponent implements OnInit, OnDestroy {
 
+  @Input() private agreement: Agreement;
+
   private AgreementContract: Promise<any>;
   private accounts : string[];
   private account: string;
   private subscription: Subscription;
-  private agreement: Agreement;
+  private filter: any;
+  private changed: boolean; // has the transaction been proposed but not confirmed
 
   constructor(
     private route: ActivatedRoute,
     private location: Location,
-    private web3Service : Web3Service
+    private web3Service : Web3Service,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -47,6 +54,39 @@ export class AgreementViewComponent implements OnInit, OnDestroy {
     this.route.paramMap
     .switchMap((params: ParamMap) => this.getAgreement(params.get('address')))
     .subscribe(agreement => this.agreement = agreement);
+
+    this.changed = false;
+
+    this.watchAgreementEvents();
+  }
+
+  ngOnDestroy() {
+     this.subscription.unsubscribe();
+     this.filter.stopWatching((error, result) => {
+       if (error == null) {
+         console.log("stopped watching");
+       }
+     });
+  }
+
+  watchAgreementEvents() {
+    this.AgreementContract.then((contract) => {
+      return contract.at(this.agreement.address);
+    }).then ((agreementInstance) => {
+      return agreementInstance.StateChange({fromBlock: "latest"});
+    }).then ((stateChanges) => {
+      stateChanges.watch((error, result) => {
+        if (error == null) {
+          console.log(result.args);
+          this.snackBar.open("State changed.", "Dismiss", { duration: 2000 });
+          this.getAgreement(this.agreement.address).then((agreement) => {
+            this.agreement = agreement;
+            this.changed = false;
+          });
+        }
+      });
+      this.filter = stateChanges;
+    });
   }
 
   setAgreementPromise() {
@@ -57,10 +97,6 @@ export class AgreementViewComponent implements OnInit, OnDestroy {
         }
       }, 100)
     });
-  }
-
-  ngOnDestroy() {
-     this.subscription.unsubscribe();
   }
 
   getAgreement(address: string): Promise<Agreement> {
@@ -115,7 +151,7 @@ export class AgreementViewComponent implements OnInit, OnDestroy {
 
   isBeneficiaryInState(state: string): boolean {
     if (this.agreement.beneficiary) {
-      return ((this.agreement.beneficiary === this.account) && (this.inState(state)));
+      return ((this.agreement.beneficiary.toLowerCase() === this.account.toLowerCase()) && (this.inState(state)));
     } else {
       return false;
     }
@@ -159,8 +195,6 @@ export class AgreementViewComponent implements OnInit, OnDestroy {
   }
 
   propose() {
-    console.log('propose');
-
     this.AgreementContract.then((contract) => {
       return contract.at(this.agreement.address);
     }).then((factoryInstance) => {
@@ -170,21 +204,38 @@ export class AgreementViewComponent implements OnInit, OnDestroy {
       );
     }).then((success) => {
       if (!success) {
-        console.log('failed');
-      //   this.snackBar.open("Transaction failed!", "Dismiss", { duration: 2000 });
-      //   this.status = "Transaction failed!";
+        this.snackBar.open("Transaction failed!", "Dismiss", { duration: 2000 });
       }
       else {
-        console.log('success');
-      //   this.snackBar.open("Transaction submitted!", "Dismiss", { duration: 2000 });
-      //   this.status = "Transaction submitted.";
-      //   this.transaction = success;
-      //   this.confirmed = true;
+        this.snackBar.open("Transaction submitted!", "Dismiss", { duration: 2000 });
+        this.changed = true;
       }
     }).catch(function (e) {
-      // this.snackBar.open("Error creating agreement; see log.", "Dismiss", { duration: 2000 });
+      this.snackBar.open("Error creating agreement; see log.", "Dismiss", { duration: 2000 });
       // this.status = "Error creating agreement; see log.";
       console.log(e);
     });
+  }
+
+  print() {
+    // let docDefinition = {
+    //   styles: {
+    //     centerStyle: {
+    //      italic: true,
+    //      alignment: 'center'
+    //     }
+    //   },
+    //   header: 'FlexiTime Token Agreement',
+    //   footer: new Date(),
+    //   content: [
+    //     { text: 'FlexiTime Token Agreement', style: [ 'centerStyle' ] },
+    //     'Address: ' + this.agreement.address,
+    //     'Name: ' + this.agreement.name,
+    //     'Symbol: ' + this.agreement.symbol
+    //   ]
+    // };
+    //
+    // pdfMake.vfs = vfs.pdfMake.vfs;
+    // pdfMake.createPdf(docDefinition).download('optionalName.pdf');
   }
 }
