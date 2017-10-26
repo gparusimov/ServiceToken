@@ -217,25 +217,37 @@ export class AgreementViewComponent implements OnInit, OnDestroy {
     });
   }
 
+  accept() {
+    //TODO: this create a new token contract, so watch for that
+  }
+
+  reject () {
+    //TODO: this should be simpler
+  }
+
+  withdraw() {
+    //TODO: this should be simpler
+  }
+
   print() {
-    // let docDefinition = {
-    //   styles: {
-    //     centerStyle: {
-    //      italic: true,
-    //      alignment: 'center'
-    //     }
-    //   },
-    //   header: 'FlexiTime Token Agreement',
-    //   footer: new Date(),
-    //   content: [
-    //     { text: 'FlexiTime Token Agreement', style: [ 'centerStyle' ] },
-    //     'Address: ' + this.agreement.address,
-    //     'Name: ' + this.agreement.name,
-    //     'Symbol: ' + this.agreement.symbol
-    //   ]
-    // };
-    //
-    // pdfMake.vfs = vfs.pdfMake.vfs;
-    // pdfMake.createPdf(docDefinition).download('optionalName.pdf');
+    let docDefinition = {
+      styles: {
+        centerStyle: {
+         italic: true,
+         alignment: 'center'
+        }
+      },
+      header: 'FlexiTime Token Agreement',
+      footer: new Date(),
+      content: [
+        { text: 'FlexiTime Token Agreement', style: [ 'centerStyle' ] },
+        'Address: ' + this.agreement.address,
+        'Name: ' + this.agreement.name,
+        'Symbol: ' + this.agreement.symbol
+      ]
+    };
+
+    pdfMake.vfs = vfs.pdfMake.vfs;
+    pdfMake.createPdf(docDefinition).download('optionalName.pdf');
   }
 }
