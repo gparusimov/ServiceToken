@@ -1,15 +1,15 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Web3Service } from "../../web3/web3.service";
 import { MatSnackBar } from '@angular/material';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
-import { Subscription } from "rxjs";
+import { AccountComponent } from "../../account/account.component";
 
 export class Agreement {
   constructor(
-    public tokenName: string,
-    public tokenSymbol: string,
-    public decimalPlaces: number,
+    public name: string,
+    public symbol: string,
+    public decimals: number,
     public totalSupply: number,
     public validFromDate: Date,
     public validFromHour: number,
@@ -17,8 +17,8 @@ export class Agreement {
     public expiresEndDate: Date,
     public expiresEndHour: number,
     public expiresEndMinute: number,
-    public issuerAddress: string,
-    public beneficiaryAddress: string,
+    public issuer: string,
+    public beneficiary: string,
   ) { }
 }
 
@@ -28,35 +28,31 @@ export class Agreement {
   styleUrls: ['./agreement-form.component.css']
 })
 
-export class AgreementFormComponent implements OnInit, OnDestroy  {
+export class AgreementFormComponent extends AccountComponent  {
 
   @Input() agreement: Agreement;
 
-  private Factory: Promise<any>;
-  private accounts : string[];
-  private account: string;
   private submitted: boolean;
   private confirmed: boolean;
   private created: boolean;
   private status: string;
   private transaction: string;
-  private subscription: Subscription;
   private filter: any;
   private agreementHash: string;
 
   constructor(
-    private web3Service : Web3Service,
+    web3Service : Web3Service,
     private snackBar: MatSnackBar,
     private location: Location,
     private router: Router
-  ) { }
+  ) {
+    super(web3Service);
+  }
 
   ngOnInit() {
-    this.watchAccount();
-    this.setFactory();
-    this.watchAgreementEvents();
+    super.ngOnInit();
     this.agreement = new Agreement(
-      null, null, null, null, new Date(), 0, 0, new Date(), 0, 0, this.account, null
+      null, null, null, null, new Date(), 0, 0, new Date(), 0, 0, null, null
     );
     this.submitted = false;
     this.confirmed = false;
@@ -65,8 +61,12 @@ export class AgreementFormComponent implements OnInit, OnDestroy  {
     this.transaction = "";
   }
 
+  web3OnAccount() {
+    this.watchAgreements();
+  }
+
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
     this.filter.stopWatching((error, result) => {
       if (error == null) {
         console.log("stopped watching");
@@ -74,10 +74,8 @@ export class AgreementFormComponent implements OnInit, OnDestroy  {
     });
   }
 
-  watchAgreementEvents() {
-    this.Factory.then((contract) => {
-      return contract.deployed();
-    }).then ((factoryInstance) => {
+  watchAgreements() {
+    this.web3Service.FlexiTimeFactory.deployed().then ((factoryInstance) => {
       return factoryInstance.Agreement({fromBlock: "latest"});
     }).then ((agreements) => {
       agreements.watch((error, result) => {
@@ -95,33 +93,21 @@ export class AgreementFormComponent implements OnInit, OnDestroy  {
     });
   }
 
-  setFactory() {
-    this.Factory = new Promise((resolve, reject) => {
-      setInterval(() => {
-        if (this.web3Service.ready) {
-          resolve(this.web3Service.FlexiTimeFactory);
-        }
-      }, 100)
-    });
-  }
-
   onSubmit() {
     this.submitted = true;
     this.status = "Confirming transaction.";
 
-    this.Factory.then((contract) => {
-      return contract.deployed();
-    }).then((factoryInstance) => {
+    this.web3Service.FlexiTimeFactory.deployed().then((factoryInstance) => {
       return factoryInstance.createAgreement.sendTransaction(
-        this.agreement.tokenName,
-        this.agreement.tokenSymbol,
-        this.agreement.decimalPlaces,
+        this.agreement.name,
+        this.agreement.symbol,
+        this.agreement.decimals,
         this.agreement.totalSupply,
         this.toEpoch(this.agreement.validFromDate, this.agreement.validFromHour, this.agreement.validFromMinute),
         this.toEpoch(this.agreement.expiresEndDate, this.agreement.expiresEndHour, this.agreement.expiresEndMinute),
-        this.agreement.issuerAddress,
-        this.agreement.beneficiaryAddress,
-        {from: this.account}
+        this.agreement.issuer,
+        this.agreement.beneficiary,
+        {from: this.defaultAccount}
       );
     }).then((success) => {
       if (!success) {
@@ -143,13 +129,6 @@ export class AgreementFormComponent implements OnInit, OnDestroy  {
 
   toEpoch(date: Date, hour: number, minute: number) {
     return Math.round(date.getTime() / 1000) + hour * 60 * 60 + minute * 60;
-  }
-
-  watchAccount() {
-    this.subscription = this.web3Service.accountsObservable.subscribe((accounts) => {
-      this.accounts = accounts;
-      this.account = accounts[0];
-    });
   }
 
   goBack(): void {

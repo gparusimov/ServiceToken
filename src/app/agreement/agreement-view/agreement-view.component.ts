@@ -1,12 +1,12 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Location } from '@angular/common';
 import 'rxjs/add/operator/switchMap';
-import { Subscription } from "rxjs";
 import { Web3Service } from "../../web3/web3.service";
 import { default as pdfMake } from 'pdfmake/build/pdfmake';
 import { default as vfs } from 'pdfmake/build/vfs_fonts';
 import { MatSnackBar } from '@angular/material';
+import { AccountComponent } from "../../account/account.component";
 
 export class Agreement {
   constructor(
@@ -30,38 +30,35 @@ export class Agreement {
   styleUrls: ['./agreement-view.component.css']
 })
 
-export class AgreementViewComponent implements OnInit, OnDestroy {
+export class AgreementViewComponent extends AccountComponent {
 
   @Input() private agreement: Agreement;
 
-  private AgreementContract: Promise<any>;
-  private accounts : string[];
-  private account: string;
-  private subscription: Subscription;
   private filter: any;
   private changed: boolean; // has the transaction been proposed but not confirmed
 
   constructor(
     private route: ActivatedRoute,
     private location: Location,
-    private web3Service : Web3Service,
+    web3Service : Web3Service,
     private snackBar: MatSnackBar
-  ) {}
+  ) {
+    super(web3Service);
+  }
 
   ngOnInit(): void {
-    this.watchAccount();
+    super.ngOnInit();
+    this.changed = false;
+  }
 
+  web3OnAccount() {
     this.route.paramMap
     .switchMap((params: ParamMap) => this.getAgreement(params.get('address')))
-    .subscribe(agreement => this.agreement = agreement);
-
-    this.changed = false;
-
-    this.watchAgreementEvents();
+    .subscribe(agreement => { this.agreement = agreement; this.watchAgreements(); });
   }
 
   ngOnDestroy() {
-     this.subscription.unsubscribe();
+     super.ngOnDestroy();
      this.filter.stopWatching((error, result) => {
        if (error == null) {
          console.log("stopped watching");
@@ -69,10 +66,8 @@ export class AgreementViewComponent implements OnInit, OnDestroy {
      });
   }
 
-  watchAgreementEvents() {
-    this.AgreementContract.then((contract) => {
-      return contract.at(this.agreement.address);
-    }).then ((agreementInstance) => {
+  watchAgreements() {
+    this.web3Service.FlexiTimeAgreement.at(this.agreement.address).then ((agreementInstance) => {
       return agreementInstance.StateChange({fromBlock: "latest"});
     }).then ((stateChanges) => {
       stateChanges.watch((error, result) => {
@@ -89,18 +84,7 @@ export class AgreementViewComponent implements OnInit, OnDestroy {
     });
   }
 
-  setAgreementPromise() {
-    this.AgreementContract = new Promise((resolve, reject) => {
-      setInterval(() => {
-        if (this.web3Service.ready) {
-          resolve(this.web3Service.FlexiTimeAgreement);
-        }
-      }, 100)
-    });
-  }
-
   getAgreement(address: string): Promise<Agreement> {
-
     let agreement = new Agreement(
       address, null, null, null, null, null, null, null, null, null, null
     );
@@ -111,9 +95,7 @@ export class AgreementViewComponent implements OnInit, OnDestroy {
     ];
 
     for (let key of keys){
-      this.AgreementContract.then((contract) => {
-        return contract.at(address);
-      }).then((factoryInstance) => {
+      this.web3Service.FlexiTimeAgreement.at(address).then((factoryInstance) => {
         if (factoryInstance[key]) {
           return factoryInstance[key].call();
         } else {
@@ -133,17 +115,9 @@ export class AgreementViewComponent implements OnInit, OnDestroy {
     this.location.back();
   }
 
-  watchAccount() {
-    this.subscription = this.web3Service.accountsObservable.subscribe((accounts) => {
-      this.accounts = accounts;
-      this.account = accounts[0];
-      this.setAgreementPromise();
-    });
-  }
-
   isIssuerInState(state: string): boolean {
     if (this.agreement.issuer) {
-      return ((this.agreement.issuer.toLowerCase() == this.account.toLowerCase()) && (this.inState(state)));
+      return ((this.agreement.issuer.toLowerCase() == this.defaultAccount.toLowerCase()) && (this.inState(state)));
     } else {
       return false;
     }
@@ -151,7 +125,7 @@ export class AgreementViewComponent implements OnInit, OnDestroy {
 
   isBeneficiaryInState(state: string): boolean {
     if (this.agreement.beneficiary) {
-      return ((this.agreement.beneficiary.toLowerCase() === this.account.toLowerCase()) && (this.inState(state)));
+      return ((this.agreement.beneficiary.toLowerCase() === this.defaultAccount.toLowerCase()) && (this.inState(state)));
     } else {
       return false;
     }
@@ -195,12 +169,10 @@ export class AgreementViewComponent implements OnInit, OnDestroy {
   }
 
   propose() {
-    this.AgreementContract.then((contract) => {
-      return contract.at(this.agreement.address);
-    }).then((factoryInstance) => {
+    this.web3Service.FlexiTimeAgreement.at(this.agreement.address).then((factoryInstance) => {
       return factoryInstance.propose.sendTransaction(
         '0x94fkbekedhf7',
-        {from: this.account}
+        {from: this.defaultAccount}
       );
     }).then((success) => {
       if (!success) {

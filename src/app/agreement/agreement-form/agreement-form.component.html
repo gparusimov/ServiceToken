@@ -5,13 +5,13 @@
     <span [hidden]="submitted">
       <form class="ftt-form" #agreementForm="ngForm" (ngSubmit)="onSubmit()">
         <mat-form-field class="ftt-full-width">
-          <input matInput placeholder="Token name" [(ngModel)]="agreement.tokenName" name="tokenName" required>
+          <input matInput placeholder="Token name" [(ngModel)]="agreement.name" name="name" required>
         </mat-form-field>
         <mat-form-field class="ftt-full-width">
-          <input matInput placeholder="Token symbol" [(ngModel)]="agreement.tokenSymbol" name="tokenSymbol" required>
+          <input matInput placeholder="Token symbol" [(ngModel)]="agreement.symbol" name="symbol" required>
         </mat-form-field>
         <mat-form-field class="ftt-full-width">
-          <input matInput placeholder="Decimal places" type="number" [(ngModel)]="agreement.decimalPlaces" name="decimalPlaces" required>
+          <input matInput placeholder="Decimal places" type="number" [(ngModel)]="agreement.decimals" name="decimals" required>
         </mat-form-field>
         <mat-form-field class="ftt-full-width">
           <input matInput placeholder="Total supply" type="number" [(ngModel)]="agreement.totalSupply" name="totalSupply" required>
@@ -45,10 +45,10 @@
           </mat-form-field>
         </div>
         <mat-form-field class="ftt-full-width">
-          <input matInput placeholder="Issuer address" [(ngModel)]="agreement.issuerAddress" name="issuerAddress" required>
+          <input matInput placeholder="Issuer address" [(ngModel)]="agreement.issuer" name="issuer" required>
         </mat-form-field>
         <mat-form-field class="ftt-full-width">
-          <input matInput placeholder="Beneficiary address" [(ngModel)]="agreement.beneficiaryAddress" name="beneficiaryAddress" required>
+          <input matInput placeholder="Beneficiary address" [(ngModel)]="agreement.beneficiary" name="beneficiary" required>
         </mat-form-field>
         <button mat-raised-button type="submit" [disabled]="!agreementForm.form.valid">Create</button>
       </form>
