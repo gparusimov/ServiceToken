@@ -1,6 +1,10 @@
 <mat-card>
   <mat-card-title>FlexiTime Factory</mat-card-title>
-  <mat-card-subtitle>View Agreements</mat-card-subtitle>
+  <mat-card-subtitle>View Agreements
+    <a mat-icon-button routerLink="/factory/create_agreement">
+      <mat-icon matTooltip="New Agreement">add_circle</mat-icon>
+    </a>
+  </mat-card-subtitle>
   <mat-card-content>
     <mat-list>
       <mat-list-item *ngFor="let agreement of agreements">
@@ -8,7 +12,4 @@
       </mat-list-item>
     </mat-list>
   </mat-card-content>
-  <mat-card-actions>
-    <a mat-raised-button routerLink="/factory/create_agreement">Create</a>
-  </mat-card-actions>
 </mat-card>

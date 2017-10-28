@@ -7,6 +7,9 @@ import { AccountComponent } from "../../account/account.component";
 
 export class Agreement {
   constructor(
+    public address: string,
+    public transaction: string,
+    public status: string,
     public name: string,
     public symbol: string,
     public decimals: number,
@@ -35,10 +38,7 @@ export class AgreementFormComponent extends AccountComponent  {
   private submitted: boolean;
   private confirmed: boolean;
   private created: boolean;
-  private status: string;
-  private transaction: string;
   private filter: any;
-  private agreementHash: string;
 
   constructor(
     web3Service : Web3Service,
@@ -52,13 +52,11 @@ export class AgreementFormComponent extends AccountComponent  {
   ngOnInit() {
     super.ngOnInit();
     this.agreement = new Agreement(
-      null, null, null, null, new Date(), 0, 0, new Date(), 0, 0, null, null
+      "", "", null, null, null, null, null, new Date(), 0, 0, new Date(), 0, 0, null, null
     );
     this.submitted = false;
     this.confirmed = false;
     this.created = false;
-    this.status = "Creating transaction.";
-    this.transaction = "";
   }
 
   web3OnAccount() {
@@ -80,12 +78,11 @@ export class AgreementFormComponent extends AccountComponent  {
     }).then ((agreements) => {
       agreements.watch((error, result) => {
         if (error == null) {
-          console.log(result);
-          if (this.transaction === result.transactionHash) {
+          if (this.agreement.transaction === result.transactionHash) {
             this.snackBar.open("Agreement " + result.args.agreement + " created.", "Dismiss", { duration: 2000 });
             this.created = true;
-            this.agreementHash = result.args.agreement;
-            this.status = "Agreeement created.";
+            this.agreement.address = result.args.agreement;
+            this.agreement.status = "Created";
           }
         }
       });
@@ -95,7 +92,7 @@ export class AgreementFormComponent extends AccountComponent  {
 
   onSubmit() {
     this.submitted = true;
-    this.status = "Confirming transaction.";
+    this.agreement.status = "Confirming";
 
     this.web3Service.FlexiTimeFactory.deployed().then((factoryInstance) => {
       return factoryInstance.createAgreement.sendTransaction(
@@ -112,17 +109,17 @@ export class AgreementFormComponent extends AccountComponent  {
     }).then((success) => {
       if (!success) {
         this.snackBar.open("Transaction failed!", "Dismiss", { duration: 2000 });
-        this.status = "Transaction failed!";
+        this.agreement.status = "Failed";
       }
       else {
         this.snackBar.open("Transaction submitted!", "Dismiss", { duration: 2000 });
-        this.status = "Transaction submitted.";
-        this.transaction = success;
+        this.agreement.status = "Submitted";
+        this.agreement.transaction = success;
         this.confirmed = true;
       }
     }).catch((e) => {
       this.snackBar.open("Error creating agreement; see log.", "Dismiss", { duration: 2000 });
-      this.status = "Error creating agreement; see log.";
+      this.agreement.status = "Error";
       console.log(e);
     });
   }

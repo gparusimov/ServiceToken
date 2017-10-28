@@ -12,28 +12,20 @@
     <div><label>Issuer: </label> {{ agreement.issuer }} </div>
     <div><label>Beneficiary: </label> {{ agreement.beneficiary }} </div>
     <div><label>State: </label> {{ agreement.state | state }} </div>
-
-    <div [hidden]='isIssuerInState("Created")'>
-      <div><label>Content Hash: </label> {{ agreement.contentHash }} </div>
-    </div>
-    <div [hidden]='!isIssuerInState("Created")'>
-      <span [hidden]='this.changed'>
-        <form class="ftt-form" #agreementForm="ngForm" (ngSubmit)="propose()">
-          <mat-form-field class="ftt-full-width">
-            <input matInput placeholder="Hashed hash" [(ngModel)]="agreement.contentHash" name="contentHash" required>
-          </mat-form-field>
-          <button mat-raised-button type="submit" [disabled]="!agreementForm.form.valid">Propose</button>
-        </form>
+    <div><label>Content Hash: </label> {{ agreement.contentHash }} </div>
+    <span [hidden]='!inState("Created")'>
+      <span [hidden]='!isAccount("issuer")'>
+        <button mat-raised-button (click)="propose()">Propose</button>
       </span>
-    </div>
-    <span [hidden]='!isIssuerInState("Proposed")'>
-      <button mat-raised-button (click)="withdraw()">Withdraw</button>
     </span>
-    <span [hidden]='!isBeneficiaryInState("Proposed")'>
-      <button mat-raised-button (click)="accept()">Accept</button>
-    </span>
-    <span [hidden]='!isBeneficiaryInState("Proposed")'>
-      <button hidden=true mat-raised-button (click)="reject()">Reject</button>
+    <span [hidden]='!inState("Proposed")'>
+      <span [hidden]='!isAccount("issuer")'>
+        <button mat-raised-button (click)="withdraw()">Withdraw</button>
+      </span>
+      <span [hidden]='!isAccount("beneficiary")'>
+        <button mat-raised-button (click)="accept()">Accept</button>
+        <button hidden=true mat-raised-button (click)="reject()">Reject</button>
+      </span>
     </span>
   </mat-card-content>
   <mat-card-actions>

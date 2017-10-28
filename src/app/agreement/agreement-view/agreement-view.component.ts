@@ -1,11 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Inject } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Location } from '@angular/common';
 import 'rxjs/add/operator/switchMap';
 import { Web3Service } from "../../web3/web3.service";
 import { default as pdfMake } from 'pdfmake/build/pdfmake';
 import { default as vfs } from 'pdfmake/build/vfs_fonts';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { AccountComponent } from "../../account/account.component";
 
 export class Agreement {
@@ -41,7 +41,8 @@ export class AgreementViewComponent extends AccountComponent {
     private route: ActivatedRoute,
     private location: Location,
     web3Service : Web3Service,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    public dialog: MatDialog
   ) {
     super(web3Service);
   }
@@ -115,17 +116,9 @@ export class AgreementViewComponent extends AccountComponent {
     this.location.back();
   }
 
-  isIssuerInState(state: string): boolean {
-    if (this.agreement.issuer) {
-      return ((this.agreement.issuer.toLowerCase() == this.defaultAccount.toLowerCase()) && (this.inState(state)));
-    } else {
-      return false;
-    }
-  }
-
-  isBeneficiaryInState(state: string): boolean {
-    if (this.agreement.beneficiary) {
-      return ((this.agreement.beneficiary.toLowerCase() === this.defaultAccount.toLowerCase()) && (this.inState(state)));
+  isAccount(account: string): boolean {
+    if (this.agreement[account]) {
+      return (this.agreement[account].toLowerCase() === this.defaultAccount.toLowerCase());
     } else {
       return false;
     }
@@ -169,36 +162,116 @@ export class AgreementViewComponent extends AccountComponent {
   }
 
   propose() {
+    let proposeDialogRef = this.dialog.open(ProposeDialog, {
+      width: '400px',
+      data: { hash: "" }
+    });
+
+    proposeDialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('propose');
+
+        this.web3Service.FlexiTimeAgreement.at(this.agreement.address).then((factoryInstance) => {
+          return factoryInstance.propose.sendTransaction(
+            result,
+            {from: this.defaultAccount}
+          );
+        }).then((success) => {
+          if (!success) {
+            this.snackBar.open("Propose transaction failed!", "Dismiss", { duration: 2000 });
+          }
+          else {
+            this.snackBar.open("Propose transaction submitted!", "Dismiss", { duration: 2000 });
+            this.changed = true;
+          }
+        }).catch(function (e) {
+          this.snackBar.open("Propose transaction error; see log.", "Dismiss", { duration: 2000 });
+          // this.status = "Error creating agreement; see log.";
+          console.log(e);
+        });
+      } else {
+        console.log('cancel');
+      }
+    });
+  }
+
+  accept() {
+    // TODO: this create a new token contract, so watch for that
+    // TODO: do a pop-up to supply the single hash
+    // TODO: watch for newly created
+
+
+    let acceptDialogRef = this.dialog.open(AcceptDialog, {
+      width: '400px',
+      data: { agreement: this.agreement }
+    });
+
+    acceptDialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('accept');
+
+        this.web3Service.FlexiTimeAgreement.at(this.agreement.address).then((factoryInstance) => {
+          return factoryInstance.accept.sendTransaction(
+            result,
+            {from: this.defaultAccount}
+          );
+        }).then((success) => {
+          if (!success) {
+            this.snackBar.open("Accept transaction failed!", "Dismiss", { duration: 2000 });
+          }
+          else {
+            this.snackBar.open("Accept transaction submitted!", "Dismiss", { duration: 2000 });
+            this.changed = true;
+          }
+        }).catch(function (e) {
+          this.snackBar.open("Accept transaction error; see log.", "Dismiss", { duration: 2000 });
+          // this.status = "Error creating agreement; see log.";
+          console.log(e);
+        });
+      } else {
+        console.log('cancel');
+      }
+    });
+  }
+
+  reject () {
     this.web3Service.FlexiTimeAgreement.at(this.agreement.address).then((factoryInstance) => {
-      return factoryInstance.propose.sendTransaction(
-        '0x94fkbekedhf7',
+      return factoryInstance.reject.sendTransaction(
         {from: this.defaultAccount}
       );
     }).then((success) => {
       if (!success) {
-        this.snackBar.open("Transaction failed!", "Dismiss", { duration: 2000 });
+        this.snackBar.open("Reject transaction failed!", "Dismiss", { duration: 2000 });
       }
       else {
-        this.snackBar.open("Transaction submitted!", "Dismiss", { duration: 2000 });
+        this.snackBar.open("Reject transaction submitted!", "Dismiss", { duration: 2000 });
         this.changed = true;
       }
     }).catch(function (e) {
-      this.snackBar.open("Error creating agreement; see log.", "Dismiss", { duration: 2000 });
+      this.snackBar.open("Reject transaction error; see log.", "Dismiss", { duration: 2000 });
       // this.status = "Error creating agreement; see log.";
       console.log(e);
     });
   }
 
-  accept() {
-    //TODO: this create a new token contract, so watch for that
-  }
-
-  reject () {
-    //TODO: this should be simpler
-  }
-
   withdraw() {
-    //TODO: this should be simpler
+    this.web3Service.FlexiTimeAgreement.at(this.agreement.address).then((factoryInstance) => {
+      return factoryInstance.withdraw.sendTransaction(
+        {from: this.defaultAccount}
+      );
+    }).then((success) => {
+      if (!success) {
+        this.snackBar.open("Withdraw transaction failed!", "Dismiss", { duration: 2000 });
+      }
+      else {
+        this.snackBar.open("Withdraw transaction submitted!", "Dismiss", { duration: 2000 });
+        this.changed = true;
+      }
+    }).catch(function (e) {
+      this.snackBar.open("Withdraw transaction error; see log.", "Dismiss", { duration: 2000 });
+      // this.status = "Error creating agreement; see log.";
+      console.log(e);
+    });
   }
 
   print() {
@@ -221,5 +294,37 @@ export class AgreementViewComponent extends AccountComponent {
 
     pdfMake.vfs = vfs.pdfMake.vfs;
     pdfMake.createPdf(docDefinition).download('optionalName.pdf');
+  }
+}
+
+@Component({
+  selector: 'propose-dialog',
+  templateUrl: 'propose-dialog.html',
+})
+
+export class ProposeDialog {
+
+  constructor(
+    public dialogRef: MatDialogRef<ProposeDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
+
+  onCancel(): void {
+    this.dialogRef.close();
+  }
+}
+
+@Component({
+  selector: 'accept-dialog',
+  templateUrl: 'accept-dialog.html',
+})
+
+export class AcceptDialog {
+
+  constructor(
+    public dialogRef: MatDialogRef<AcceptDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
+
+  onCancel(): void {
+    this.dialogRef.close();
   }
 }
