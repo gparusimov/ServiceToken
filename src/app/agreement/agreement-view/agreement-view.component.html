@@ -2,17 +2,52 @@
   <mat-card-title>FlexiTime Factory</mat-card-title>
   <mat-card-subtitle>View Agreement</mat-card-subtitle>
   <mat-card-content>
-    <div><label>Address: </label> {{ agreement.address }} </div>
-    <div><label>Name: </label> {{ agreement.name }} </div>
-    <div><label>Symbol: </label> {{ agreement.symbol }} </div>
-    <div><label>Decimals: </label> {{ agreement.decimals }} </div>
-    <div><label>Total Supply: </label> {{ agreement.totalSupply }} </div>
-    <div><label>Valid From: </label> {{ agreement.validFrom | epoch | date:'y-MMMM-dd hh:mm' }} </div>
-    <div><label>Expires End: </label> {{ agreement.expiresEnd | epoch | date:'y-MMMM-dd hh:mm' }} </div>
-    <div><label>Issuer: </label> {{ agreement.issuer }} </div>
-    <div><label>Beneficiary: </label> {{ agreement.beneficiary }} </div>
-    <div><label>State: </label> {{ agreement.state | state }} </div>
-    <div><label>Content Hash: </label> {{ agreement.contentHash }} </div>
+    <mat-list>
+      <mat-list-item>
+        <label class="ftt-view-label">Address: </label>
+        <span>{{ agreement.address }}</span>
+      </mat-list-item>
+      <mat-list-item>
+        <label class="ftt-view-label">Name: </label>
+        <span>{{ agreement.name }}</span>
+      </mat-list-item>
+      <mat-list-item>
+        <label class="ftt-view-label">Symbol: </label>
+        <span>{{ agreement.symbol }}</span>
+      </mat-list-item>
+      <mat-list-item>
+        <label class="ftt-view-label">Decimals: </label>
+        <span>{{ agreement.decimals }}</span>
+      </mat-list-item>
+      <mat-list-item>
+        <label class="ftt-view-label">Total Supply: </label>
+        <span>{{ agreement.totalSupply }}</span>
+      </mat-list-item>
+      <mat-list-item>
+        <label class="ftt-view-label">Valid From: </label>
+        <span>{{ agreement.validFrom | epoch | date:'y-MMMM-dd hh:mm' }}</span>
+      </mat-list-item>
+      <mat-list-item>
+        <label class="ftt-view-label">Expires End: </label>
+        <span>{{ agreement.expiresEnd | epoch | date:'y-MMMM-dd hh:mm' }}</span>
+      </mat-list-item>
+      <mat-list-item>
+        <label class="ftt-view-label">Issuer: </label>
+        <span>{{ agreement.issuer }}</span>
+      </mat-list-item>
+      <mat-list-item>
+        <label class="ftt-view-label">Beneficiary: </label>
+        <span>{{ agreement.beneficiary }}</span>
+      </mat-list-item>
+      <mat-list-item>
+        <label class="ftt-view-label">State: </label>
+        <span>{{ agreement.state | state }}</span>
+      </mat-list-item>
+      <mat-list-item>
+        <label class="ftt-view-label">Content Hash: </label>
+        <span>{{ agreement.contentHash }}</span>
+      </mat-list-item>
+    </mat-list>
     <span [hidden]='!inState("Created")'>
       <span [hidden]='!isAccount("issuer")'>
         <button mat-raised-button (click)="propose()">Propose</button>

@@ -5,7 +5,7 @@ import 'rxjs/add/operator/switchMap';
 import { Web3Service } from "../../web3/web3.service";
 import { default as pdfMake } from 'pdfmake/build/pdfmake';
 import { default as vfs } from 'pdfmake/build/vfs_fonts';
-import { MatSnackBar, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatSnackBar, MatDialog, MatDialogRef, MatList, MAT_DIALOG_DATA } from '@angular/material';
 import { AccountComponent } from "../../account/account.component";
 
 export class Agreement {

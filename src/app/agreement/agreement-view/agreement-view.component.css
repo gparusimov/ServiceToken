@@ -7,3 +7,8 @@
 .ftt-full-width {
   width: 100%;
 }
+
+.ftt-view-label {
+  width: 150px;
+  font-size: smaller;
+}

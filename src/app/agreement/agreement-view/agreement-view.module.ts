@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgreementViewComponent, ProposeDialog, AcceptDialog } from './agreement-view.component';
-import { MatCardModule, MatButtonModule, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatDialogModule } from '@angular/material';
+import { MatCardModule, MatButtonModule, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatDialogModule, MatListModule } from '@angular/material';
 import { AgreementViewRoutingModule } from './agreement-view-routing.module';
 import { EpochPipe } from './epoch.pipe';
 import { StatePipe } from './state.pipe';
@@ -16,6 +16,7 @@ import { FormsModule } from '@angular/forms';
     MatButtonModule,
     MatInputModule,
     MatDialogModule,
+    MatListModule,
     FormsModule,
     AgreementViewRoutingModule
   ],
