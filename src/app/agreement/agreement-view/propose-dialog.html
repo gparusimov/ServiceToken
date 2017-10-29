@@ -1,6 +1,9 @@
 <h1 mat-dialog-title>Propose Agreement</h1>
 <div mat-dialog-content>
-  <p>Please enter the double hash:</p>
+  <p>Select a file or paste it's double hash:</p>
+  <p>
+    <input type="file" (change)="onChange($event)">
+  </p>
   <mat-form-field class="ftt-full-width">
     <input matInput tabindex="1" [(ngModel)]="data.hash">
   </mat-form-field>

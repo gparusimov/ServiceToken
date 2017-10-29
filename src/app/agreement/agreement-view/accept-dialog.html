@@ -1,7 +1,10 @@
 <h1 mat-dialog-title>Accept Agreement</h1>
 <div mat-dialog-content>
-  <p>Please enter the content hash:</p>
-  <mat-form-field>
+  <p>Select a file or paste it's hash:</p>
+  <p>
+    <input type="file" (change)="onChange($event)">
+  </p>
+  <mat-form-field class="ftt-full-width">
     <input matInput tabindex="1" [(ngModel)]="data.hash">
   </mat-form-field>
 </div>

@@ -7,6 +7,7 @@ import { default as pdfMake } from 'pdfmake/build/pdfmake';
 import { default as vfs } from 'pdfmake/build/vfs_fonts';
 import { MatSnackBar, MatDialog, MatDialogRef, MatList, MAT_DIALOG_DATA } from '@angular/material';
 import { AccountComponent } from "../../account/account.component";
+import { Router } from '@angular/router';
 
 export class Agreement {
   constructor(
@@ -20,7 +21,8 @@ export class Agreement {
     public contentHash: string,
     public issuer: string,
     public beneficiary: string,
-    public state: any
+    public state: any,
+    public token: any
   ) { }
 }
 
@@ -42,7 +44,8 @@ export class AgreementViewComponent extends AccountComponent {
     private location: Location,
     web3Service : Web3Service,
     private snackBar: MatSnackBar,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private router: Router
   ) {
     super(web3Service);
   }
@@ -87,12 +90,12 @@ export class AgreementViewComponent extends AccountComponent {
 
   getAgreement(address: string): Promise<Agreement> {
     let agreement = new Agreement(
-      address, null, null, null, null, null, null, null, null, null, null
+      address, null, null, null, null, null, null, null, null, null, null, null
     );
 
     let keys = [
       'name', 'symbol', 'decimals', 'totalSupply', 'validFrom', 'expiresEnd',
-      'contentHash', 'issuer', 'beneficiary', 'state'
+      'contentHash', 'issuer', 'beneficiary', 'state', 'token'
     ];
 
     for (let key of keys){
@@ -295,6 +298,25 @@ export class AgreementViewComponent extends AccountComponent {
     pdfMake.vfs = vfs.pdfMake.vfs;
     pdfMake.createPdf(docDefinition).download('optionalName.pdf');
   }
+
+  onChange(event) {
+    var file = event.srcElement.files[0];
+    console.log(file);
+
+    var reader = new FileReader();
+
+    reader.onload = (e) => {
+      var hash = this.web3Service.sha3(reader.result);
+
+      if (hash === this.agreement.contentHash) {
+        this.snackBar.open("Document hash matches.", "Dismiss", { duration: 2000 });
+      } else {
+        this.snackBar.open("Document hash does not match!", "Dismiss", { duration: 2000 });
+      }
+    }
+
+    reader.readAsBinaryString(file);
+  }
 }
 
 @Component({
@@ -306,10 +328,24 @@ export class ProposeDialog {
 
   constructor(
     public dialogRef: MatDialogRef<ProposeDialog>,
+    private web3Service : Web3Service,
     @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   onCancel(): void {
     this.dialogRef.close();
+  }
+
+  onChange(event) {
+    var file = event.srcElement.files[0];
+    console.log(file);
+
+    var reader = new FileReader();
+
+    reader.onload = (e) => {
+      this.data.hash = this.web3Service.sha3hex(this.web3Service.sha3(reader.result));
+    }
+
+    reader.readAsBinaryString(file);
   }
 }
 
@@ -322,9 +358,23 @@ export class AcceptDialog {
 
   constructor(
     public dialogRef: MatDialogRef<AcceptDialog>,
+    private web3Service : Web3Service,
     @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   onCancel(): void {
     this.dialogRef.close();
+  }
+
+  onChange(event) {
+    var file = event.srcElement.files[0];
+    console.log(file);
+
+    var reader = new FileReader();
+
+    reader.onload = (e) => {
+      this.data.hash = this.web3Service.sha3(reader.result);
+    }
+
+    reader.readAsBinaryString(file);
   }
 }

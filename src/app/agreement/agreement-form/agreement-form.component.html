@@ -32,7 +32,7 @@
       </mat-form-field>
       <div class="ftt-full-width">
         <mat-form-field>
-          <input matInput [matDatepicker]="pickerFrom" placeholder="Valid from Date" [(ngModel)]="agreement.validFromDate" name="validFromDate" required [disabled]="submitted">
+          <input matInput type="time" [matDatepicker]="pickerFrom" placeholder="Valid from Date" [(ngModel)]="agreement.validFromDate" name="validFromDate" required [disabled]="submitted">
           <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
           <mat-datepicker #pickerFrom></mat-datepicker>
         </mat-form-field>
