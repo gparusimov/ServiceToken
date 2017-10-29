@@ -28,6 +28,14 @@ export class Web3Service {
     setInterval(() => this.checkAndRefreshWeb3(), 100);
   }
 
+  public sha3(input: string): string {
+    return this.web3.utils.sha3(input);
+  }
+
+  public sha3hex(input: string): string {
+    return this.web3.utils.sha3(input, {encoding: "hex"});
+  }
+
   private checkAndRefreshWeb3() {
 
     if (this.ready) {

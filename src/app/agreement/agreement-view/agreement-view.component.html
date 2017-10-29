@@ -2,25 +2,79 @@
   <mat-card-title>FlexiTime Factory</mat-card-title>
   <mat-card-subtitle>View Agreement</mat-card-subtitle>
   <mat-card-content>
-    <div><label>Address: </label> {{ agreement.address }} </div>
-    <div><label>Name: </label> {{ agreement.name }} </div>
-    <div><label>Symbol: </label> {{ agreement.symbol }} </div>
-    <div><label>Decimals: </label> {{ agreement.decimals }} </div>
-    <div><label>Total Supply: </label> {{ agreement.totalSupply }} </div>
-    <div><label>Valid From: </label> {{ agreement.validFrom | epoch | date:'y-MMMM-dd hh:mm' }} </div>
-    <div><label>Expires End: </label> {{ agreement.expiresEnd | epoch | date:'y-MMMM-dd hh:mm' }} </div>
-    <div><label>Content Hash: </label> {{ agreement.contentHash }} </div>
-    <div><label>Issuer: </label> {{ agreement.issuer }} </div>
-    <div><label>Beneficiary: </label> {{ agreement.beneficiary }} </div>
-    <div><label>State: </label> {{ agreement.state | state }} </div>
+    <mat-list>
+      <mat-list-item>
+        <label class="ftt-view-label">Address: </label>
+        <span>{{ agreement.address }}</span>
+      </mat-list-item>
+      <mat-list-item>
+        <label class="ftt-view-label">Name: </label>
+        <span>{{ agreement.name }}</span>
+      </mat-list-item>
+      <mat-list-item>
+        <label class="ftt-view-label">Symbol: </label>
+        <span>{{ agreement.symbol }}</span>
+      </mat-list-item>
+      <mat-list-item>
+        <label class="ftt-view-label">Decimals: </label>
+        <span>{{ agreement.decimals }}</span>
+      </mat-list-item>
+      <mat-list-item>
+        <label class="ftt-view-label">Total Supply: </label>
+        <span>{{ agreement.totalSupply }}</span>
+      </mat-list-item>
+      <mat-list-item>
+        <label class="ftt-view-label">Valid From: </label>
+        <span>{{ agreement.validFrom | epoch | date:'y-MMMM-dd hh:mm' }}</span>
+      </mat-list-item>
+      <mat-list-item>
+        <label class="ftt-view-label">Expires End: </label>
+        <span>{{ agreement.expiresEnd | epoch | date:'y-MMMM-dd hh:mm' }}</span>
+      </mat-list-item>
+      <mat-list-item>
+        <label class="ftt-view-label">Issuer: </label>
+        <span>{{ agreement.issuer }}</span>
+      </mat-list-item>
+      <mat-list-item>
+        <label class="ftt-view-label">Beneficiary: </label>
+        <span>{{ agreement.beneficiary }}</span>
+      </mat-list-item>
+      <mat-list-item>
+        <label class="ftt-view-label">State: </label>
+        <span>{{ agreement.state | state }}</span>
+      </mat-list-item>
+      <mat-list-item>
+        <label class="ftt-view-label">Content Hash: </label>
+        <span>{{ agreement.contentHash }}</span>
+      </mat-list-item>
+      <mat-list-item>
+        <label class="ftt-view-label">Test Hash: </label>
+        <input type="file" (change)="onChange($event)">
+      </mat-list-item>
+      <mat-list-item>
+        <label class="ftt-view-label">Token: </label>
+        <a *ngIf="agreement.token" [routerLink]="['/tokens/', agreement.token]">
+          {{ agreement.token }}
+        </a>
+      </mat-list-item>
+    </mat-list>
+    <span [hidden]='!inState("Created")'>
+      <span [hidden]='!isAccount("issuer")'>
+        <button mat-raised-button (click)="propose()">Propose</button>
+      </span>
+    </span>
+    <span [hidden]='!inState("Proposed")'>
+      <span [hidden]='!isAccount("issuer")'>
+        <button mat-raised-button (click)="withdraw()">Withdraw</button>
+      </span>
+      <span [hidden]='!isAccount("beneficiary")'>
+        <button mat-raised-button (click)="accept()">Accept</button>
+        <button hidden=true mat-raised-button (click)="reject()">Reject</button>
+      </span>
+    </span>
   </mat-card-content>
   <mat-card-actions>
     <button mat-raised-button (click)="goBack()">Back</button>
-    <span *ngIf="agreement.state">
-      <span [hidden]='!isIssuerInState("Created")'><button mat-raised-button (click)="propose()">Propose</button></span>
-      <span [hidden]='!isIssuerInState("Proposed")'><button mat-raised-button (click)="withdraw()">Withdraw</button></span>
-      <span [hidden]='!isBeneficiaryInState("Proposed")'><button mat-raised-button (click)="accept()">Accept</button></span>
-      <span [hidden]='!isBeneficiaryInState("Proposed")'><button hidden=true mat-raised-button (click)="reject()">Reject</button></span>
-    </span>
+    <button mat-raised-button (click)="print()">Print</button>
   </mat-card-actions>
 </mat-card>

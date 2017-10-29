@@ -1,7 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { Web3Service } from "../../web3/web3.service";
 import { MatSnackBar } from '@angular/material';
 import { Subscription } from "rxjs";
+import { AccountComponent } from "../../account/account.component";
 
 @Component({
   selector: 'app-agreement-list',
@@ -9,46 +10,31 @@ import { Subscription } from "rxjs";
   styleUrls: ['./agreement-list.component.css']
 })
 
-export class AgreementListComponent implements OnInit, OnDestroy {
+export class AgreementListComponent extends AccountComponent {
 
-  private Factory: Promise<any>;
   private filter: any;
   private agreements: string[];
-  private accounts : string[];
-  private account: string;
-  private subscription: Subscription;
 
-  constructor(private web3Service : Web3Service, private snackBar: MatSnackBar) { }
+  constructor(web3Service : Web3Service, private snackBar: MatSnackBar) {
+    super(web3Service);
+  }
 
-  ngOnInit() {
-    this.setFactory();
-    this.watchAccount();
-    this.watchAgreementEvents();
+  web3OnAccount() {
+    this.setAgreements();
+    this.watchAgreements();
   }
 
   ngOnDestroy() {
+    super.ngOnDestroy();
     this.filter.stopWatching((error, result) => {
       if (error == null) {
         console.log("stopped watching");
       }
     });
-    this.subscription.unsubscribe();
-  }
-
-  setFactory() {
-    this.Factory = new Promise((resolve, reject) => {
-      setInterval(() => {
-        if (this.web3Service.ready) {
-          resolve(this.web3Service.FlexiTimeFactory);
-        }
-      }, 100)
-    });
   }
 
   setAgreements() {
-    this.Factory.then((contract) => {
-      return contract.deployed();
-    }).then((factoryInstance) => {
+    this.web3Service.FlexiTimeFactory.deployed().then((factoryInstance) => {
       return factoryInstance.getAgreements.call();
     }).then((agreements) => {
       this.agreements = agreements;
@@ -57,10 +43,8 @@ export class AgreementListComponent implements OnInit, OnDestroy {
     });
   }
 
-  watchAgreementEvents() {
-    this.Factory.then((contract) => {
-      return contract.deployed();
-    }).then ((factoryInstance) => {
+  watchAgreements() {
+    this.web3Service.FlexiTimeFactory.deployed().then ((factoryInstance) => {
       return factoryInstance.Agreement({fromBlock: "latest"});
     }).then ((agreements) => {
       agreements.watch((error, result) => {
@@ -70,14 +54,8 @@ export class AgreementListComponent implements OnInit, OnDestroy {
         }
       });
       this.filter = agreements;
-    });
-  }
-
-  watchAccount() {
-    this.subscription = this.web3Service.accountsObservable.subscribe((accounts) => {
-      this.accounts = accounts;
-      this.account = accounts[0];
-      this.setAgreements(); // update agreements array in case user swtiches to a different account
+    }).catch(function (e) {
+      console.log(e);
     });
   }
 

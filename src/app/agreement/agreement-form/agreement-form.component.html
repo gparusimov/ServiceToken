@@ -2,66 +2,72 @@
   <mat-card-title>FlexiTime Factory</mat-card-title>
   <mat-card-subtitle>Create Agreement</mat-card-subtitle>
   <mat-card-content>
-    <span [hidden]="submitted">
-      <form class="ftt-form" #agreementForm="ngForm" (ngSubmit)="onSubmit()" disabled>
+    <form class="ftt-form" #agreementForm="ngForm" (ngSubmit)="onSubmit()">
+      <span [hidden]="!submitted">
         <mat-form-field class="ftt-full-width">
-          <input matInput placeholder="Token name" [(ngModel)]="agreement.tokenName" name="tokenName" required>
+          <a [routerLink]="['/agreements/', agreement.address]">
+            <input matInput placeholder="Agreement address" [(ngModel)]="agreement.address" name="address" disabled>
+          </a>
         </mat-form-field>
         <mat-form-field class="ftt-full-width">
-          <input matInput placeholder="Token symbol" [(ngModel)]="agreement.tokenSymbol" name="tokenSymbol" required>
+          <a [href]="'https://etherscan.io/tx/' + agreement.transaction" target="_blank">
+            <input matInput placeholder="Transaction address" [(ngModel)]="agreement.transaction" name="transaction" disabled>
+          </a>
         </mat-form-field>
         <mat-form-field class="ftt-full-width">
-          <input matInput placeholder="Decimal places" type="number" [(ngModel)]="agreement.decimalPlaces" name="decimalPlaces" required>
+          <input matInput placeholder="Status" [(ngModel)]="agreement.status" name="status" disabled>
         </mat-form-field>
-        <mat-form-field class="ftt-full-width">
-          <input matInput placeholder="Total supply" type="number" [(ngModel)]="agreement.totalSupply" name="totalSupply" required>
-        </mat-form-field>
-        <div class="ftt-full-width">
-          <mat-form-field>
-            <input matInput [matDatepicker]="pickerFrom" placeholder="Valid from Date" [(ngModel)]="agreement.validFromDate" name="validFromDate" required>
-            <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
-            <mat-datepicker #pickerFrom></mat-datepicker>
-          </mat-form-field>
-          <mat-form-field style="max-width: 50px">
-            <input matInput placeholder="Hour" type=number [(ngModel)]="agreement.validFromHour" name="validFromHour" required>
-          </mat-form-field>
-          <span> : </span>
-          <mat-form-field style="max-width: 50px">
-            <input matInput placeholder="Minute" type=number [(ngModel)]="agreement.validFromMinute" name="validFromMinute" required>
-          </mat-form-field>
-        </div>
-        <div class="ftt-full-width">
-          <mat-form-field>
-            <input matInput [matDatepicker]="pickerEnd" placeholder="Expires end Date" [(ngModel)]="agreement.expiresEndDate" name="expiresEndDate" required>
-            <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
-            <mat-datepicker #pickerEnd></mat-datepicker>
-          </mat-form-field>
-          <mat-form-field style="max-width: 50px">
-            <input matInput placeholder="Hour" type=number [(ngModel)]="agreement.expiresEndHour" name="expiresEndHour" required>
-          </mat-form-field>
-          <span> : </span>
-          <mat-form-field style="max-width: 50px">
-            <input matInput placeholder="Minute" type=number [(ngModel)]="agreement.expiresEndMinute" name="expiresEndMinute" required>
-          </mat-form-field>
-        </div>
-        <mat-form-field class="ftt-full-width">
-          <input matInput placeholder="Issuer address" [(ngModel)]="agreement.issuerAddress" name="issuerAddress" required>
-        </mat-form-field>
-        <mat-form-field class="ftt-full-width">
-          <input matInput placeholder="Beneficiary address" [(ngModel)]="agreement.beneficiaryAddress" name="beneficiaryAddress" required>
-        </mat-form-field>
-        <button mat-raised-button type="submit" [disabled]="!agreementForm.form.valid" (ngSubmit)="onSubmit()" >Create</button>
-      </form>
-    </span>
-    <span [hidden]="!submitted">
-      {{ status }}
-      <span [hidden]="!confirmed">
-        See
-        <a mat-icon-button [href]="'https://etherscan.io/tx/' + transaction" target="_blank">
-          {{ transaction }}
-        </a>
       </span>
-    </span>
+      <mat-form-field class="ftt-full-width">
+        <input matInput placeholder="Token name" [(ngModel)]="agreement.name" name="name" required [disabled]="submitted">
+      </mat-form-field>
+      <mat-form-field class="ftt-full-width">
+        <input matInput placeholder="Token symbol" [(ngModel)]="agreement.symbol" name="symbol" required [disabled]="submitted">
+      </mat-form-field>
+      <mat-form-field class="ftt-full-width">
+        <input matInput placeholder="Decimal places" type="number" [(ngModel)]="agreement.decimals" name="decimals" required [disabled]="submitted">
+      </mat-form-field>
+      <mat-form-field class="ftt-full-width">
+        <input matInput placeholder="Total supply" type="number" [(ngModel)]="agreement.totalSupply" name="totalSupply" required [disabled]="submitted">
+      </mat-form-field>
+      <div class="ftt-full-width">
+        <mat-form-field>
+          <input matInput type="time" [matDatepicker]="pickerFrom" placeholder="Valid from Date" [(ngModel)]="agreement.validFromDate" name="validFromDate" required [disabled]="submitted">
+          <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+          <mat-datepicker #pickerFrom></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field style="max-width: 50px">
+          <input matInput placeholder="Hour" type=number [(ngModel)]="agreement.validFromHour" name="validFromHour" required [disabled]="submitted">
+        </mat-form-field>
+        <span> : </span>
+        <mat-form-field style="max-width: 50px">
+          <input matInput placeholder="Minute" type=number [(ngModel)]="agreement.validFromMinute" name="validFromMinute" required [disabled]="submitted">
+        </mat-form-field>
+      </div>
+      <div class="ftt-full-width">
+        <mat-form-field>
+          <input matInput [matDatepicker]="pickerEnd" placeholder="Expires end Date" [(ngModel)]="agreement.expiresEndDate" name="expiresEndDate" required [disabled]="submitted">
+          <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+          <mat-datepicker #pickerEnd></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field style="max-width: 50px">
+          <input matInput placeholder="Hour" type=number [(ngModel)]="agreement.expiresEndHour" name="expiresEndHour" required [disabled]="submitted">
+        </mat-form-field>
+        <span> : </span>
+        <mat-form-field style="max-width: 50px">
+          <input matInput placeholder="Minute" type=number [(ngModel)]="agreement.expiresEndMinute" name="expiresEndMinute" required [disabled]="submitted">
+        </mat-form-field>
+      </div>
+      <mat-form-field class="ftt-full-width">
+        <input matInput placeholder="Issuer address" [(ngModel)]="agreement.issuer" name="issuer" required [disabled]="submitted">
+      </mat-form-field>
+      <mat-form-field class="ftt-full-width">
+        <input matInput placeholder="Beneficiary address" [(ngModel)]="agreement.beneficiary" name="beneficiary" required [disabled]="submitted">
+      </mat-form-field>
+      <span [hidden]="submitted">
+        <button mat-raised-button type="submit" [disabled]="!agreementForm.form.valid">Create</button>
+      </span>
+    </form>
   </mat-card-content>
   <mat-card-actions>
     <button mat-raised-button (click)="goBack()">Back</button>
