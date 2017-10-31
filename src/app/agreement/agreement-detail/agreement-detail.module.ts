@@ -1,9 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AgreementDetailComponent, ProposeDialog, AcceptDialog } from './agreement-detail.component';
+import { AgreementDetailComponent, ProposeDialog, AcceptDialog, TestDialog } from './agreement-detail.component';
 import { MatCardModule, MatButtonModule, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatDialogModule, MatListModule } from '@angular/material';
-import { EpochPipe } from '../epoch.pipe';
-import { StatePipe } from '../state.pipe';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
@@ -20,8 +18,8 @@ import { RouterModule } from '@angular/router';
     FormsModule,
     RouterModule
   ],
-  declarations: [AgreementDetailComponent, ProposeDialog, AcceptDialog, EpochPipe, StatePipe],
-  exports: [AgreementDetailComponent, EpochPipe, StatePipe],
-  entryComponents : [ProposeDialog, AcceptDialog]
+  declarations: [ AgreementDetailComponent, ProposeDialog, AcceptDialog, TestDialog] ,
+  exports: [ AgreementDetailComponent],
+  entryComponents : [ ProposeDialog, AcceptDialog, TestDialog ]
 })
 export class AgreementDetailModule { }

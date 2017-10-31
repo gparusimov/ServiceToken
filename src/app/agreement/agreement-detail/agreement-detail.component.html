@@ -1,61 +1,60 @@
 <span *ngIf="agreement">
-  <mat-list>
-    <mat-list-item>
-      <label class="ftt-view-label">Address: </label>
-      <span>{{ agreement.address }}</span>
-    </mat-list-item>
-    <mat-list-item>
-      <label class="ftt-view-label">Name: </label>
-      <span>{{ agreement.name }}</span>
-    </mat-list-item>
-    <mat-list-item>
-      <label class="ftt-view-label">Symbol: </label>
-      <span>{{ agreement.symbol }}</span>
-    </mat-list-item>
-    <mat-list-item>
-      <label class="ftt-view-label">Decimals: </label>
-      <span>{{ agreement.decimals }}</span>
-    </mat-list-item>
-    <mat-list-item>
-      <label class="ftt-view-label">Total Supply: </label>
-      <span>{{ agreement.totalSupply }}</span>
-    </mat-list-item>
-    <mat-list-item>
-      <label class="ftt-view-label">Valid From: </label>
-      <span>{{ agreement.validFrom | epoch | date:'y-MMMM-dd hh:mm' }}</span>
-    </mat-list-item>
-    <mat-list-item>
-      <label class="ftt-view-label">Expires End: </label>
-      <span>{{ agreement.expiresEnd | epoch | date:'y-MMMM-dd hh:mm' }}</span>
-    </mat-list-item>
-    <mat-list-item>
-      <label class="ftt-view-label">Issuer: </label>
-      <span>{{ agreement.issuer }}</span>
-    </mat-list-item>
-    <mat-list-item>
-      <label class="ftt-view-label">Beneficiary: </label>
-      <span>{{ agreement.beneficiary }}</span>
-    </mat-list-item>
-    <mat-list-item>
-      <label class="ftt-view-label">State: </label>
-      <span>{{ agreement.state | state }}</span>
-    </mat-list-item>
-    <mat-list-item>
-      <label class="ftt-view-label">Content Hash: </label>
-      <span>{{ agreement.contentHash }}</span>
-    </mat-list-item>
-    <mat-list-item>
-      <label class="ftt-view-label">Test Hash: </label>
-      <input type="file" (change)="onTest($event)">
-      {{ this.isMatching }}
-    </mat-list-item>
-    <mat-list-item>
-      <label class="ftt-view-label">Token: </label>
-      <a *ngIf="agreement.token" [routerLink]="['/tokens/', agreement.token]">
-        {{ agreement.token }}
+  <form class="ftt-form" #agreementForm="ngForm" (ngSubmit)="onSubmit()">
+    <mat-form-field class="ftt-full-width">
+      <input matInput placeholder="Token name" [(ngModel)]="agreement.name" name="name" required [disabled]='!this.agreement.inState("Draft")'>
+    </mat-form-field>
+    <mat-form-field class="ftt-full-width">
+      <input matInput placeholder="Token symbol" [(ngModel)]="agreement.symbol" name="symbol" required [disabled]='!this.agreement.inState("Draft")'>
+    </mat-form-field>
+    <mat-form-field class="ftt-full-width">
+      <input matInput placeholder="Decimal places" type="number" [(ngModel)]="agreement.decimals" name="decimals" required [disabled]='!this.agreement.inState("Draft")'>
+    </mat-form-field>
+    <mat-form-field class="ftt-full-width">
+      <input matInput placeholder="Total supply" type="number" [(ngModel)]="agreement.totalSupply" name="totalSupply" required [disabled]='!this.agreement.inState("Draft")'>
+    </mat-form-field>
+    <mat-form-field class="ftt-full-width">
+      <input matInput placeholder="Valid from" type="datetime-local" [(ngModel)]="agreement.validFromISOString" name="validFrom" required [disabled]='!this.agreement.inState("Draft")'>
+    </mat-form-field>
+    <mat-form-field class="ftt-full-width">
+      <input matInput placeholder="Expires end" type="datetime-local" [(ngModel)]="agreement.expiresEndISOString" name="expiredEnd" required [disabled]='!this.agreement.inState("Draft")'>
+    </mat-form-field>
+    <mat-form-field class="ftt-full-width">
+      <input matInput placeholder="Issuer address" [(ngModel)]="agreement.issuer" name="issuer" required [disabled]='!this.agreement.inState("Draft")'>
+    </mat-form-field>
+    <mat-form-field class="ftt-full-width">
+      <input matInput placeholder="Beneficiary address" [(ngModel)]="agreement.beneficiary" name="beneficiary" required [disabled]='!this.agreement.inState("Draft")'>
+    </mat-form-field>
+    <span [hidden]='!this.agreement.inState("Draft")'>
+      <button mat-raised-button type="submit" [disabled]="!agreementForm.form.valid">Create</button>
+    </span>
+  </form>
+  <span [hidden]='this.agreement.inState("Draft")'>
+    <mat-form-field class="ftt-full-width">
+      <a [routerLink]="['/agreements/', agreement.address]">
+        <input matInput placeholder="Agreement address" [(ngModel)]="agreement.address" name="address" disabled>
       </a>
-    </mat-list-item>
-  </mat-list>
+    </mat-form-field>
+    <mat-form-field class="ftt-full-width">
+      <input matInput placeholder="State" [(ngModel)]="agreement.stateString" name="state" disabled>
+    </mat-form-field>
+  </span>
+  <span [hidden]='!this.agreement.inState("Accepted")'>
+    <mat-form-field class="ftt-full-width">
+      <input matInput placeholder="Content hash" [(ngModel)]="agreement.contentHash" name="contentHash" disabled>
+    </mat-form-field>
+    <mat-form-field *ngIf="agreement.token" class="ftt-full-width">
+      <a [routerLink]="['/tokens/', agreement.token]">
+        <input matInput placeholder="Token address" [(ngModel)]="agreement.token" name="token" disabled>
+      </a>
+    </mat-form-field>
+  </span>
+  <span [hidden]='!this.agreement.inState("Submitted")'>
+    <mat-form-field class="ftt-full-width">
+      <a [href]="'https://etherscan.io/tx/' + agreement.transaction" target="_blank">
+        <input matInput placeholder="Transaction address" [(ngModel)]="agreement.transaction" name="transaction" disabled>
+      </a>
+    </mat-form-field>
+  </span>
   <span [hidden]='!this.agreement.inState("Created")'>
     <span [hidden]='!isAccount("issuer")'>
       <button mat-raised-button (click)="onPropose()">Propose</button>
@@ -70,5 +69,8 @@
       <button mat-raised-button (click)="onAccept()">Accept</button>
       <button mat-raised-button (click)="onReject()">Reject</button>
     </span>
+  </span>
+  <span [hidden]='!this.agreement.inState("Accepted")'>
+    <button mat-raised-button (click)="onTest()">Test</button>
   </span>
 </span>

@@ -17,9 +17,6 @@ export class AgreementFormComponent extends AccountComponent  {
 
   @Input() agreement: Agreement;
 
-  private submitted: boolean;
-  private confirmed: boolean;
-  private created: boolean;
   private filter: any;
 
   constructor(
@@ -34,11 +31,8 @@ export class AgreementFormComponent extends AccountComponent  {
   ngOnInit() {
     super.ngOnInit();
     this.agreement = new Agreement(
-      "", "", null, null, null, null, null, null, null, null, null, null, null, null
+      "", "", "-1", null, null, null, null, null, null, null, null, null, null
     );
-    this.submitted = false;
-    this.confirmed = false;
-    this.created = false;
   }
 
   web3OnAccount() {
@@ -62,9 +56,8 @@ export class AgreementFormComponent extends AccountComponent  {
         if (error == null) {
           if (this.agreement.transaction === result.transactionHash) {
             this.snackBar.open("Agreement " + result.args.agreement + " created.", "Dismiss", { duration: 2000 });
-            this.created = true;
             this.agreement.address = result.args.agreement;
-            this.agreement.status = "Created";
+            this.agreement.stateString = "Created";
           }
         }
       });
@@ -72,9 +65,9 @@ export class AgreementFormComponent extends AccountComponent  {
     });
   }
 
-  onSubmit() {
-    this.submitted = true;
-    this.agreement.status = "Confirming";
+  onSubmitted() {
+    console.log('on submit');
+    this.agreement.stateString = "Signing";
 
     this.web3Service.FlexiTimeFactory.deployed().then((factoryInstance) => {
       return factoryInstance.createAgreement.sendTransaction(
@@ -91,17 +84,16 @@ export class AgreementFormComponent extends AccountComponent  {
     }).then((success) => {
       if (!success) {
         this.snackBar.open("Transaction failed!", "Dismiss", { duration: 2000 });
-        this.agreement.status = "Failed";
+        this.agreement.stateString = "Failed";
       }
       else {
         this.snackBar.open("Transaction submitted!", "Dismiss", { duration: 2000 });
-        this.agreement.status = "Submitted";
+        this.agreement.stateString = "Submitted";
         this.agreement.transaction = success;
-        this.confirmed = true;
       }
     }).catch((e) => {
       this.snackBar.open("Error creating agreement; see log.", "Dismiss", { duration: 2000 });
-      this.agreement.status = "Error";
+      this.agreement.stateString = "Error";
       console.log(e);
     });
   }

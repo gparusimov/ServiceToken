@@ -68,7 +68,7 @@ export class AgreementViewComponent extends AccountComponent {
 
   getAgreement(address: string): Promise<Agreement> {
     let agreement = new Agreement(
-      address, "", null, null, null, null, null, null, null, null, null, null, null, null
+      address, "", null, null, null, null, null, null, null, null, null, null, null
     );
 
     let keys = [
@@ -174,14 +174,6 @@ export class AgreementViewComponent extends AccountComponent {
       }
     }).catch(function (e) {
       this.snackBar.open("Withdraw transaction error; see log.", "Dismiss", { duration: 2000 });
-      console.log(e);
-    });
-  }
-
-  onSign() {
-    this.web3Service.sign(this.defaultAccount, "0x8aab0093e9179e31a7995597d74b49ea530304172245d35ab24b6766eb2780b2").then((result) => {
-      console.log(result);
-    }).catch(function (e) {
       console.log(e);
     });
   }

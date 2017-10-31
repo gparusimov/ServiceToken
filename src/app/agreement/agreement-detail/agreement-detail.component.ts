@@ -16,6 +16,7 @@ export class AgreementDetailComponent implements OnInit {
   @Input() private agreement: Agreement;
   @Input() private account: string;
 
+  @Output() onSubmitted = new EventEmitter<null>();
   @Output() onProposed = new EventEmitter<string>();
   @Output() onWithdrawn = new EventEmitter<null>();
   @Output() onAccepted = new EventEmitter<string>();
@@ -41,25 +42,6 @@ export class AgreementDetailComponent implements OnInit {
     }
   }
 
-  onTest(event) {
-    var file = event.srcElement.files[0];
-    console.log(file);
-
-    var reader = new FileReader();
-
-    reader.onload = (e) => {
-      var hash = this.web3Service.sha3(reader.result);
-
-      if (hash === this.agreement.contentHash) {
-        this.isMatching = true;
-      } else {
-        this.isMatching = false;
-      }
-    }
-
-    reader.readAsBinaryString(file);
-  }
-
   onPrint() {
     let docDefinition = {
       styles: {
@@ -80,6 +62,13 @@ export class AgreementDetailComponent implements OnInit {
 
     pdfMake.vfs = vfs.pdfMake.vfs;
     pdfMake.createPdf(docDefinition).download('optionalName.pdf');
+  }
+
+  onTest() {
+    let testDialogRef = this.dialog.open(TestDialog, {
+      width: '400px',
+      data: { hash: this.agreement.contentHash, isMatching: false }
+    });
   }
 
   onPropose() {
@@ -110,6 +99,10 @@ export class AgreementDetailComponent implements OnInit {
 
   onWithdraw() {
     this.onWithdrawn.emit();
+  }
+
+  onSubmit() {
+    this.onSubmitted.emit();
   }
 }
 
@@ -167,6 +160,42 @@ export class AcceptDialog {
 
     reader.onload = (e) => {
       this.data.hash = this.web3Service.sha3(reader.result);
+    }
+
+    reader.readAsBinaryString(file);
+  }
+}
+
+@Component({
+  selector: 'test-dialog',
+  templateUrl: 'test-dialog.html',
+})
+
+export class TestDialog {
+
+  constructor(
+    public dialogRef: MatDialogRef<TestDialog>,
+    private web3Service : Web3Service,
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
+
+  onDone(): void {
+    this.dialogRef.close();
+  }
+
+  onChange(event) {
+    var file = event.srcElement.files[0];
+    console.log(file);
+
+    var reader = new FileReader();
+
+    reader.onload = (e) => {
+      var hash = this.web3Service.sha3(reader.result);
+
+      if (hash === this.data.hash) {
+        this.data.isMatching = true;
+      } else {
+        this.data.isMatching = false;
+      }
     }
 
     reader.readAsBinaryString(file);
