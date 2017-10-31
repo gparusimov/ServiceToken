@@ -58,12 +58,12 @@
         </a>
       </mat-list-item>
     </mat-list>
-    <span [hidden]='!inState("Created")'>
+    <span [hidden]='!this.agreement.inState("Created")'>
       <span [hidden]='!isAccount("issuer")'>
         <button mat-raised-button (click)="propose()">Propose</button>
       </span>
     </span>
-    <span [hidden]='!inState("Proposed")'>
+    <span [hidden]='!this.agreement.inState("Proposed")'>
       <span [hidden]='!isAccount("issuer")'>
         <button mat-raised-button (click)="withdraw()">Withdraw</button>
       </span>

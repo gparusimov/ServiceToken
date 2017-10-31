@@ -4,22 +4,8 @@ import { MatSnackBar } from '@angular/material';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { AccountComponent } from "../../account/account.component";
-
-export class Agreement {
-  constructor(
-    public address: string,
-    public transaction: string,
-    public status: string,
-    public name: string,
-    public symbol: string,
-    public decimals: number,
-    public totalSupply: number,
-    public validFrom: string,
-    public expiresEnd: string,
-    public issuer: string,
-    public beneficiary: string,
-  ) { }
-}
+import { Agreement } from "../agreement";
+import { default as BigNumber } from 'bignumber.js';
 
 @Component({
   selector: 'app-agreement-form',
@@ -48,7 +34,7 @@ export class AgreementFormComponent extends AccountComponent  {
   ngOnInit() {
     super.ngOnInit();
     this.agreement = new Agreement(
-      "", "", null, null, null, null, null, null, null, null, null
+      "", "", null, null, null, null, null, null, null, null, null, null, null, null
     );
     this.submitted = false;
     this.confirmed = false;
@@ -96,8 +82,8 @@ export class AgreementFormComponent extends AccountComponent  {
         this.agreement.symbol,
         this.agreement.decimals,
         this.agreement.totalSupply,
-        this.toEpoch(this.agreement.validFrom),
-        this.toEpoch(this.agreement.expiresEnd),
+        this.agreement.validFromEpoch,
+        this.agreement.expiresEndEpoch,
         this.agreement.issuer,
         this.agreement.beneficiary,
         {from: this.defaultAccount}
@@ -118,10 +104,6 @@ export class AgreementFormComponent extends AccountComponent  {
       this.agreement.status = "Error";
       console.log(e);
     });
-  }
-
-  toEpoch(date: string) {
-    return Math.round(new Date(date).getTime() / 1000);
   }
 
   goBack(): void {

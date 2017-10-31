@@ -8,23 +8,7 @@ import { default as vfs } from 'pdfmake/build/vfs_fonts';
 import { MatSnackBar, MatDialog, MatDialogRef, MatList, MAT_DIALOG_DATA } from '@angular/material';
 import { AccountComponent } from "../../account/account.component";
 import { Router } from '@angular/router';
-
-export class Agreement {
-  constructor(
-    public address: string,
-    public name: string,
-    public symbol: string,
-    public decimals: number,
-    public totalSupply: number,
-    public validFrom: Date,
-    public expiresEnd: Date,
-    public contentHash: string,
-    public issuer: string,
-    public beneficiary: string,
-    public state: any,
-    public token: any
-  ) { }
-}
+import { Agreement } from "../agreement";
 
 @Component({
   selector: 'app-agreement-view',
@@ -90,7 +74,7 @@ export class AgreementViewComponent extends AccountComponent {
 
   getAgreement(address: string): Promise<Agreement> {
     let agreement = new Agreement(
-      address, null, null, null, null, null, null, null, null, null, null, null
+      address, "", null, null, null, null, null, null, null, null, null, null, null, null
     );
 
     let keys = [
@@ -125,43 +109,6 @@ export class AgreementViewComponent extends AccountComponent {
     } else {
       return false;
     }
-  }
-
-  inState(state: string): boolean {
-    let result: boolean;
-
-    if (this.agreement.state) {
-      let stateNumber = this.agreement.state.toNumber();
-
-      switch(state) {
-        case "Created": {
-          result = stateNumber == 0;
-          break;
-        }
-        case "Proposed": {
-          result = stateNumber == 1;
-          break;
-        }
-        case "Withdrawn": {
-          result = stateNumber == 2;
-          break;
-        }
-        case "Accepted": {
-          result = stateNumber == 4;
-          break;
-        }
-        case "Rejected": {
-          result = stateNumber == 5;
-          break;
-        }
-        default: {
-          result = false;
-          break;
-        }
-      }
-    }
-
-    return result;
   }
 
   propose() {
@@ -202,7 +149,6 @@ export class AgreementViewComponent extends AccountComponent {
     // TODO: this create a new token contract, so watch for that
     // TODO: do a pop-up to supply the single hash
     // TODO: watch for newly created
-
 
     let acceptDialogRef = this.dialog.open(AcceptDialog, {
       width: '400px',
