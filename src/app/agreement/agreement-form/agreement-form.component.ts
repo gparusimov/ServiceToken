@@ -14,12 +14,8 @@ export class Agreement {
     public symbol: string,
     public decimals: number,
     public totalSupply: number,
-    public validFromDate: Date,
-    public validFromHour: number,
-    public validFromMinute: number,
-    public expiresEndDate: Date,
-    public expiresEndHour: number,
-    public expiresEndMinute: number,
+    public validFrom: string,
+    public expiresEnd: string,
     public issuer: string,
     public beneficiary: string,
   ) { }
@@ -52,7 +48,7 @@ export class AgreementFormComponent extends AccountComponent  {
   ngOnInit() {
     super.ngOnInit();
     this.agreement = new Agreement(
-      "", "", null, null, null, null, null, new Date(), 0, 0, new Date(), 0, 0, null, null
+      "", "", null, null, null, null, null, null, null, null, null
     );
     this.submitted = false;
     this.confirmed = false;
@@ -100,8 +96,8 @@ export class AgreementFormComponent extends AccountComponent  {
         this.agreement.symbol,
         this.agreement.decimals,
         this.agreement.totalSupply,
-        this.toEpoch(this.agreement.validFromDate, this.agreement.validFromHour, this.agreement.validFromMinute),
-        this.toEpoch(this.agreement.expiresEndDate, this.agreement.expiresEndHour, this.agreement.expiresEndMinute),
+        this.toEpoch(this.agreement.validFrom),
+        this.toEpoch(this.agreement.expiresEnd),
         this.agreement.issuer,
         this.agreement.beneficiary,
         {from: this.defaultAccount}
@@ -124,8 +120,8 @@ export class AgreementFormComponent extends AccountComponent  {
     });
   }
 
-  toEpoch(date: Date, hour: number, minute: number) {
-    return Math.round(date.getTime() / 1000) + hour * 60 * 60 + minute * 60;
+  toEpoch(date: string) {
+    return Math.round(new Date(date).getTime() / 1000);
   }
 
   goBack(): void {

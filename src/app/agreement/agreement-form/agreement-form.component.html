@@ -30,34 +30,12 @@
       <mat-form-field class="ftt-full-width">
         <input matInput placeholder="Total supply" type="number" [(ngModel)]="agreement.totalSupply" name="totalSupply" required [disabled]="submitted">
       </mat-form-field>
-      <div class="ftt-full-width">
-        <mat-form-field>
-          <input matInput type="time" [matDatepicker]="pickerFrom" placeholder="Valid from Date" [(ngModel)]="agreement.validFromDate" name="validFromDate" required [disabled]="submitted">
-          <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
-          <mat-datepicker #pickerFrom></mat-datepicker>
-        </mat-form-field>
-        <mat-form-field style="max-width: 50px">
-          <input matInput placeholder="Hour" type=number [(ngModel)]="agreement.validFromHour" name="validFromHour" required [disabled]="submitted">
-        </mat-form-field>
-        <span> : </span>
-        <mat-form-field style="max-width: 50px">
-          <input matInput placeholder="Minute" type=number [(ngModel)]="agreement.validFromMinute" name="validFromMinute" required [disabled]="submitted">
-        </mat-form-field>
-      </div>
-      <div class="ftt-full-width">
-        <mat-form-field>
-          <input matInput [matDatepicker]="pickerEnd" placeholder="Expires end Date" [(ngModel)]="agreement.expiresEndDate" name="expiresEndDate" required [disabled]="submitted">
-          <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
-          <mat-datepicker #pickerEnd></mat-datepicker>
-        </mat-form-field>
-        <mat-form-field style="max-width: 50px">
-          <input matInput placeholder="Hour" type=number [(ngModel)]="agreement.expiresEndHour" name="expiresEndHour" required [disabled]="submitted">
-        </mat-form-field>
-        <span> : </span>
-        <mat-form-field style="max-width: 50px">
-          <input matInput placeholder="Minute" type=number [(ngModel)]="agreement.expiresEndMinute" name="expiresEndMinute" required [disabled]="submitted">
-        </mat-form-field>
-      </div>
+      <mat-form-field class="ftt-full-width">
+        <input matInput placeholder="Valid From" type="datetime-local" [(ngModel)]="agreement.validFrom" name="validFrom" required [disabled]="submitted">
+      </mat-form-field>
+      <mat-form-field class="ftt-full-width">
+        <input matInput placeholder="Expires End" type="datetime-local" [(ngModel)]="agreement.expiresEnd" name="expiresEnd" required [disabled]="submitted">
+      </mat-form-field>
       <mat-form-field class="ftt-full-width">
         <input matInput placeholder="Issuer address" [(ngModel)]="agreement.issuer" name="issuer" required [disabled]="submitted">
       </mat-form-field>
