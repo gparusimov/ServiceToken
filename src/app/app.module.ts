@@ -10,6 +10,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { TokenViewModule } from './token/token-view/token-view.module';
 import { AppRoutingModule } from './app-routing.module';
 import { Web3Module } from "./web3/web3.module";
+import { AgreementDetailModule } from './agreement/agreement-detail/agreement-detail.module';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { Web3Module } from "./web3/web3.module";
     MatTooltipModule,
     MatCardModule,
     TokenViewModule,
-    Web3Module
+    Web3Module,
+    AgreementDetailModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AgreementViewComponent } from './agreement-view.component';
+import { AgreementDetailComponent, ProposeDialog, AcceptDialog } from './agreement-detail.component';
 import { MatCardModule, MatButtonModule, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatDialogModule, MatListModule } from '@angular/material';
-import { AgreementViewRoutingModule } from './agreement-view-routing.module';
-import { AgreementDetailModule } from "../agreement-detail/agreement-detail.module";
+import { EpochPipe } from '../epoch.pipe';
+import { StatePipe } from '../state.pipe';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   imports: [
@@ -17,10 +18,10 @@ import { FormsModule } from '@angular/forms';
     MatDialogModule,
     MatListModule,
     FormsModule,
-    AgreementViewRoutingModule,
-    AgreementDetailModule
+    RouterModule
   ],
-  declarations: [AgreementViewComponent],
-  exports: [AgreementViewComponent]
+  declarations: [AgreementDetailComponent, ProposeDialog, AcceptDialog, EpochPipe, StatePipe],
+  exports: [AgreementDetailComponent, EpochPipe, StatePipe],
+  entryComponents : [ProposeDialog, AcceptDialog]
 })
-export class AgreementViewModule { }
+export class AgreementDetailModule { }
