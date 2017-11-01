@@ -11,8 +11,8 @@
     </p>
     <p>
       Agreement Address:
-      <a *ngIf="token?.agreement" [routerLink]="['/agreements/', token.agreement]">
-        {{ token?.agreement }}
+      <a *ngIf="token?.agreement" [routerLink]="['/agreements/', token.agreement.address]">
+        {{ token?.agreement.address }}
       </a>
     </p>
 

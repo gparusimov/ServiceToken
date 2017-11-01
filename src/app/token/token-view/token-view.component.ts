@@ -7,6 +7,7 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { MatSnackBar } from '@angular/material';
 import { Token } from "../token";
+import { Agreement } from "../../agreement/agreement";
 import 'rxjs/add/operator/switchMap';
 
 @Component({
@@ -49,13 +50,32 @@ export class TokenViewComponent extends AccountComponent {
   //TODO
   getToken(address: string): Promise<Token> {
     let token = new Token(
-      address, null, null, null
+      address, new Agreement("", "", "-1", null, null, null, null, null, null, null, null, null, null), null, null
     );
 
     this.web3Service.FlexiTimeToken.at(address).then((factoryInstance) => {
       return factoryInstance.agreement.call();
-    }).then((value) => {
-      token.agreement = value;
+    }).then((address) => {
+      token.agreement.address = address;
+
+      let keys = [
+        'name', 'symbol', 'decimals', 'totalSupply', 'validFrom', 'expiresEnd',
+        'contentHash', 'issuer', 'beneficiary', 'state', 'token'
+      ];
+
+      for (let key of keys){
+        this.web3Service.FlexiTimeAgreement.at(address).then((factoryInstance) => {
+          if (factoryInstance[key]) {
+            return factoryInstance[key].call();
+          } else {
+            return null;
+          }
+        }).then((value) => {
+          token.agreement[key] = value;
+        }).catch(function (e) {
+          console.log(e);
+        });
+      }
     }).catch(function (e) {
       console.log(e);
     });
@@ -84,37 +104,45 @@ export class TokenViewComponent extends AccountComponent {
 
   }
 
-  //TODO
   onTransfer() {
+    let accounts = [];
+
+    accounts.push({ owner: 'issuer', address: this.token.agreement.issuer });
+    accounts.push({ owner: 'beneficiary', address: this.token.agreement.beneficiary  });
+
+    //TODO push tasks
+
     let transferDialogRef = this.dialog.open(TransferDialog, {
       width: '400px',
-      data: { hash: "" }
+      data: {
+        accounts: accounts,
+        transfer: {
+          address: "",
+          amount: 0
+        }
+      }
     });
 
-    transferDialogRef.afterClosed().subscribe(result => {
-
-
-      this.web3Service.FlexiTimeToken.at(this.token.address).then((factoryInstance) => {
-
-        console.log('transfer');
-        console.log(factoryInstance);
-
-        return factoryInstance.transfer.sendTransaction(
-          "0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1",
-          20,
-          {from: this.defaultAccount}
-        );
-      }).then((success) => {
-        if (!success) {
-          this.snackBar.open("Transaction failed!", "Dismiss", { duration: 2000 });
-        }
-        else {
-          this.snackBar.open("Transaction submitted!", "Dismiss", { duration: 2000 });
-        }
-      }).catch((e) => {
-        this.snackBar.open("Error creating agreement; see log.", "Dismiss", { duration: 2000 });
-        console.log(e);
-      });
+    transferDialogRef.afterClosed().subscribe(transfer => {
+      if (transfer) {
+        this.web3Service.FlexiTimeToken.at(this.token.address).then((factoryInstance) => {
+          return factoryInstance.transfer.sendTransaction(
+            transfer.address,
+            transfer.amount,
+            {from: this.defaultAccount}
+          );
+        }).then((success) => {
+          if (!success) {
+            this.snackBar.open("Transaction failed!", "Dismiss", { duration: 2000 });
+          }
+          else {
+            this.snackBar.open("Transaction submitted!", "Dismiss", { duration: 2000 });
+          }
+        }).catch((e) => {
+          this.snackBar.open("Error creating agreement; see log.", "Dismiss", { duration: 2000 });
+          console.log(e);
+        });
+      }
     });
   }
 
@@ -150,10 +178,6 @@ export class TransferDialog {
 
   onCancel(): void {
     this.dialogRef.close();
-  }
-
-  onChange(event) {
-
   }
 }
 
