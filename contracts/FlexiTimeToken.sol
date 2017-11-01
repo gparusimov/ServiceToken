@@ -20,10 +20,10 @@ contract FlexiTimeToken {
 
   /* Returns account balance */
   function balanceOf(address _addr) constant returns (uint256 balance) {
-    if ((agreement.validFrom() < now) && (now > agreement.expiresEnd())) {
-      return 0; // return 0 if current data is less than contract start or greate than comtract end
-    } else {
+    if ((now > agreement.validFrom()) && (now < agreement.expiresEnd())) {
       return balances[_addr]; // otherwise return the balance as is
+    } else {
+      return 0; // return 0 if current data is less than contract start or greate than comtract end
     }
   }
 
@@ -43,5 +43,9 @@ contract FlexiTimeToken {
     balances[msg.sender] -= _value;                    // Subtract from the sender
     balances[_to] += _value;                           // Add the same to the recipient
     Transfer(msg.sender, _to, _value);
+  }
+
+  function getTasks() returns (FlexiTimeTask[] _tasks) {
+    return tasks;
   }
 }

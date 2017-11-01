@@ -8,8 +8,8 @@ export class Agreement {
     public symbol: string,
     public decimals: number,
     public totalSupply: number,
-    public validFrom: string,
-    public expiresEnd: string,
+    public validFrom: number,
+    public expiresEnd: number,
     public issuer: string,
     public beneficiary: string,
     public contentHash: string
@@ -20,16 +20,16 @@ export class Agreement {
     return new Date(+this.validFrom * 1000).toISOString().slice(0, -1);
   }
 
-  get validFromEpoch(): number {
-    return this.toEpoch(this.validFrom);
+  set validFromISOString(date: string) {
+    this.validFrom = (new Date(date).getTime()) / 1000;
   }
 
   get expiresEndISOString(): string {
     return new Date(+this.expiresEnd * 1000).toISOString().slice(0, -1);
   }
 
-  get expiresEndEpoch(): number {
-    return this.toEpoch(this.expiresEnd);
+  set expiresEndISOString(date: string) {
+    this.expiresEnd = (new Date(date).getTime()) / 1000;
   }
 
   get stateString(): string {
@@ -191,9 +191,5 @@ export class Agreement {
     }
 
     return result;
-  }
-
-  private toEpoch(date: string): number {
-    return Math.round(new Date(date).getTime() / 1000);
   }
 }

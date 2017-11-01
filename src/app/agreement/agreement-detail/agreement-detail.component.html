@@ -25,7 +25,7 @@
       <input matInput placeholder="Beneficiary address" [(ngModel)]="agreement.beneficiary" name="beneficiary" required [disabled]='!this.agreement.inState("Draft")'>
     </mat-form-field>
     <span [hidden]='!this.agreement.inState("Draft")'>
-      <button mat-raised-button type="submit" [disabled]="!agreementForm.form.valid">Create</button>
+      <button mat-button type="submit" [disabled]="!agreementForm.form.valid">Create</button>
     </span>
   </form>
   <span [hidden]='this.agreement.inState("Draft")'>
@@ -54,23 +54,5 @@
         <input matInput placeholder="Transaction address" [(ngModel)]="agreement.transaction" name="transaction" disabled>
       </a>
     </mat-form-field>
-  </span>
-  <span [hidden]='!this.agreement.inState("Created")'>
-    <span [hidden]='!isAccount("issuer")'>
-      <button mat-raised-button (click)="onPropose()">Propose</button>
-      <button mat-raised-button (click)="onPrint()">Print</button>
-    </span>
-  </span>
-  <span [hidden]='!this.agreement.inState("Proposed")'>
-    <span [hidden]='!isAccount("issuer")'>
-      <button mat-raised-button (click)="onWithdraw()">Withdraw</button>
-    </span>
-    <span [hidden]='!isAccount("beneficiary")'>
-      <button mat-raised-button (click)="onAccept()">Accept</button>
-      <button mat-raised-button (click)="onReject()">Reject</button>
-    </span>
-  </span>
-  <span [hidden]='!this.agreement.inState("Accepted")'>
-    <button mat-raised-button (click)="onTest()">Test</button>
   </span>
 </span>

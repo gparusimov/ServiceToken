@@ -75,8 +75,8 @@ export class AgreementFormComponent extends AccountComponent  {
         this.agreement.symbol,
         this.agreement.decimals,
         this.agreement.totalSupply,
-        this.agreement.validFromEpoch,
-        this.agreement.expiresEndEpoch,
+        this.agreement.validFrom,
+        this.agreement.expiresEnd,
         this.agreement.issuer,
         this.agreement.beneficiary,
         {from: this.defaultAccount}

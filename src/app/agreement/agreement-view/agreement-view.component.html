@@ -1,17 +1,31 @@
-<mat-card>
+<mat-card *ngIf="agreement">
   <mat-card-title>FlexiTime Factory</mat-card-title>
   <mat-card-subtitle>View Agreement</mat-card-subtitle>
   <mat-card-content>
-    <app-agreement-detail *ngIf="agreement"
+    <app-agreement-detail
       [agreement]="this.agreement"
-      [account]="this.defaultAccount"
-      (onProposed)="onProposed($event)"
-      (onWithdrawn)="onWithdrawn()"
-      (onAccepted)="onAccepted($event)"
-      (onRejected)="onRejected($event)">
+      [account]="this.defaultAccount">
     </app-agreement-detail>
   </mat-card-content>
   <mat-card-actions>
     <button mat-raised-button (click)="goBack()">Back</button>
+    <span [hidden]='!this.agreement.inState("Created")'>
+      <span [hidden]='!isAccount("issuer")'>
+        <button mat-raised-button (click)="onPropose()">Propose</button>
+        <button mat-raised-button (click)="onPrint()">Print</button>
+      </span>
+    </span>
+    <span [hidden]='!this.agreement.inState("Proposed")'>
+      <span [hidden]='!isAccount("issuer")'>
+        <button mat-raised-button (click)="onWithdraw()">Withdraw</button>
+      </span>
+      <span [hidden]='!isAccount("beneficiary")'>
+        <button mat-raised-button (click)="onAccept()">Accept</button>
+        <button mat-raised-button (click)="onReject()">Reject</button>
+      </span>
+    </span>
+    <span [hidden]='!this.agreement.inState("Accepted")'>
+      <button mat-raised-button (click)="onTest()">Test</button>
+    </span>
   </mat-card-actions>
 </mat-card>
