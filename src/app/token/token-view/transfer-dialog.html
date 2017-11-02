@@ -1,8 +1,6 @@
 <h1 mat-dialog-title>Transfer Tokens</h1>
 
 <div mat-dialog-content>
-  <p>Select a file or paste it's hash:</p>
-
   <mat-form-field class="ftt-full-width">
     <mat-select placeholder="Address" [(ngModel)]="data.transfer.address">
       <mat-option *ngFor="let account of data.accounts" [value]="account.address">

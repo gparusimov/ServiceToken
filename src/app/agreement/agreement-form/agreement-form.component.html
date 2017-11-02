@@ -7,53 +7,6 @@
       [account]="this.defaultAccount"
       (onSubmitted)="onSubmitted()">
     </app-agreement-detail>
-
-          <!--
-    <form class="ftt-form" #agreementForm="ngForm" (ngSubmit)="onSubmit()">
-      <span [hidden]="!submitted">
-        <mat-form-field class="ftt-full-width">
-          <a [routerLink]="['/agreements/', agreement.address]">
-            <input matInput placeholder="Agreement address" [(ngModel)]="agreement.address" name="address" disabled>
-          </a>
-        </mat-form-field>
-        <mat-form-field class="ftt-full-width">
-          <a [href]="'https://etherscan.io/tx/' + agreement.transaction" target="_blank">
-            <input matInput placeholder="Transaction address" [(ngModel)]="agreement.transaction" name="transaction" disabled>
-          </a>
-        </mat-form-field>
-        <mat-form-field class="ftt-full-width">
-          <input matInput placeholder="Status" [(ngModel)]="agreement.status" name="status" disabled>
-        </mat-form-field>
-      </span>
-      <mat-form-field class="ftt-full-width">
-        <input matInput placeholder="Token name" [(ngModel)]="agreement.name" name="name" required [disabled]="submitted">
-      </mat-form-field>
-      <mat-form-field class="ftt-full-width">
-        <input matInput placeholder="Token symbol" [(ngModel)]="agreement.symbol" name="symbol" required [disabled]="submitted">
-      </mat-form-field>
-      <mat-form-field class="ftt-full-width">
-        <input matInput placeholder="Decimal places" type="number" [(ngModel)]="agreement.decimals" name="decimals" required [disabled]="submitted">
-      </mat-form-field>
-      <mat-form-field class="ftt-full-width">
-        <input matInput placeholder="Total supply" type="number" [(ngModel)]="agreement.totalSupply" name="totalSupply" required [disabled]="submitted">
-      </mat-form-field>
-      <mat-form-field class="ftt-full-width">
-        <input matInput placeholder="Valid From" type="datetime-local" [(ngModel)]="agreement.validFrom" name="validFrom" required [disabled]="submitted">
-      </mat-form-field>
-      <mat-form-field class="ftt-full-width">
-        <input matInput placeholder="Expires End" type="datetime-local" [(ngModel)]="agreement.expiresEnd" name="expiresEnd" required [disabled]="submitted">
-      </mat-form-field>
-      <mat-form-field class="ftt-full-width">
-        <input matInput placeholder="Issuer address" [(ngModel)]="agreement.issuer" name="issuer" required [disabled]="submitted">
-      </mat-form-field>
-      <mat-form-field class="ftt-full-width">
-        <input matInput placeholder="Beneficiary address" [(ngModel)]="agreement.beneficiary" name="beneficiary" required [disabled]="submitted">
-      </mat-form-field>
-      <span [hidden]="submitted">
-        <button mat-raised-button type="submit" [disabled]="!agreementForm.form.valid">Create</button>
-      </span>
-    </form>
-          -->
   </mat-card-content>
   <mat-card-actions>
     <button mat-raised-button (click)="goBack()">Back</button>

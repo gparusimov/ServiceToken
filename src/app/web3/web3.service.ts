@@ -7,6 +7,8 @@ import factory_artifacts from '../../../build/contracts/FlexiTimeFactory.json';
 import agreement_artifacts from '../../../build/contracts/FlexiTimeAgreement.json';
 import token_artifacts from '../../../build/contracts/FlexiTimeToken.json';
 import task_artifacts from '../../../build/contracts/FlexiTimeTask.json'
+import { Token } from "../token/token";
+import { Agreement } from "../agreement/agreement";
 
 @Injectable()
 export class Web3Service {

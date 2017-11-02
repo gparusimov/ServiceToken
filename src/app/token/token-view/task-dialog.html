@@ -1,16 +1,11 @@
-<h1 mat-dialog-title>New Task</h1>
-<!--
+<h1 mat-dialog-title>Create Task</h1>
+
 <div mat-dialog-content>
-  <p>Select a file or paste it's hash:</p>
-  <p>
-    <input type="file" (change)="onChange($event)">
-  </p>
   <mat-form-field class="ftt-full-width">
-    <input matInput tabindex="1" [(ngModel)]="data.hash">
+    <input matInput placeholder="Title" [(ngModel)]="data.title" name="title" required>
   </mat-form-field>
 </div>
 <div mat-dialog-actions>
-  <button mat-button tabindex="-1" [mat-dialog-close]="data.hash">Submit</button>
+  <button mat-button tabindex="-1" [mat-dialog-close]="data.title">Submit</button>
   <button mat-button tabindex="-1" (click)="onCancel()">Cancel</button>
 </div>
--->

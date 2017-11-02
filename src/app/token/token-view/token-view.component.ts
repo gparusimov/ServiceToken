@@ -18,7 +18,8 @@ import 'rxjs/add/operator/switchMap';
 export class TokenViewComponent extends AccountComponent {
 
   private token: Token;
-  private filter: any;
+  private taskFilter: any;
+  private transferFilter: any;
 
   constructor(
     web3Service : Web3Service,
@@ -31,26 +32,33 @@ export class TokenViewComponent extends AccountComponent {
     super(web3Service);
   }
 
-  //TODO
   ngOnDestroy() {
     super.ngOnDestroy();
-    // this.filter.stopWatching((error, result) => {
-    //   if (error == null) {
-    //     console.log("stopped watching");
-    //   }
-    // });
+    this.taskFilter.stopWatching((error, result) => {
+      if (error == null) {
+        console.log("stopped watching");
+      }
+    });
+    this.transferFilter.stopWatching((error, result) => {
+      if (error == null) {
+        console.log("stopped watching");
+      }
+    });
   }
 
   web3OnAccount() {
     this.route.paramMap
     .switchMap((params: ParamMap) => this.getToken(params.get('address')))
-    .subscribe(token => { this.token = token; this.watchTasks(); });
+    .subscribe(token => {
+      this.token = token;
+      this.watchTasks();
+      this.watchTransfers();
+    });
   }
 
-  //TODO
   getToken(address: string): Promise<Token> {
     let token = new Token(
-      address, new Agreement("", "", "-1", null, null, null, null, null, null, null, null, null, null), null, null
+      address, new Agreement("", "", "-1", null, null, null, null, null, null, null, null, null, null), null, new Map<string, number>()
     );
 
     this.web3Service.FlexiTimeToken.at(address).then((factoryInstance) => {
@@ -63,7 +71,7 @@ export class TokenViewComponent extends AccountComponent {
         'contentHash', 'issuer', 'beneficiary', 'state', 'token'
       ];
 
-      for (let key of keys){
+      for (let key of keys) {
         this.web3Service.FlexiTimeAgreement.at(address).then((factoryInstance) => {
           if (factoryInstance[key]) {
             return factoryInstance[key].call();
@@ -81,17 +89,20 @@ export class TokenViewComponent extends AccountComponent {
     });
 
     this.web3Service.FlexiTimeToken.at(address).then((factoryInstance) => {
-      return factoryInstance.balanceOf.call(this.defaultAccount);
-    }).then((value) => {
-      token.balance = value;
-    }).catch(function (e) {
-      console.log(e);
-    });
-
-    this.web3Service.FlexiTimeToken.at(address).then((factoryInstance) => {
       return factoryInstance.getTasks.call();
     }).then((value) => {
       token.tasks = value;
+
+      for (let account of [this.defaultAccount].concat(value)) {
+        this.web3Service.FlexiTimeToken.at(address).then((factoryInstance) => {
+          return factoryInstance.balanceOf.call(account);
+        }).then((value) => {
+          token.balances.set(account, value);
+        }).catch(function (e) {
+          console.log(e);
+        });
+      }
+
     }).catch(function (e) {
       console.log(e);
     });
@@ -99,9 +110,42 @@ export class TokenViewComponent extends AccountComponent {
     return Promise.resolve(token);
   }
 
-  //TODO
-  watchTasks() {
+  watchTransfers() {
+    this.web3Service.FlexiTimeToken.at(this.token.address).then ((tokenInstance) => {
+      return tokenInstance.Transfer({
+        fromBlock: "latest",
+        topics: [[this.defaultAccount].concat(this.token.tasks), [this.defaultAccount].concat(this.token.tasks), null]
+      });
+    }).then ((transfers) => {
+      transfers.watch((error, result) => {
+        if (error == null) {
 
+          console.log(result);
+
+          this.snackBar.open("Tokens transfered.", "Dismiss", { duration: 2000 });
+          this.getToken(this.token.address).then((token) => {
+            this.token = token;
+          });
+        }
+      });
+      this.transferFilter = transfers;
+    });
+  }
+
+  watchTasks() {
+    this.web3Service.FlexiTimeToken.at(this.token.address).then ((tokenInstance) => {
+      return tokenInstance.Task({fromBlock: "latest"});
+    }).then ((tasks) => {
+      tasks.watch((error, result) => {
+        if (error == null) {
+          this.snackBar.open("Task created.", "Dismiss", { duration: 2000 });
+          this.getToken(this.token.address).then((token) => {
+            this.token = token;
+          });
+        }
+      });
+      this.taskFilter = tasks;
+    });
   }
 
   onTransfer() {
@@ -110,7 +154,9 @@ export class TokenViewComponent extends AccountComponent {
     accounts.push({ owner: 'issuer', address: this.token.agreement.issuer });
     accounts.push({ owner: 'beneficiary', address: this.token.agreement.beneficiary  });
 
-    //TODO push tasks
+    for (let task of this.token.tasks) {
+      accounts.push({ owner: task.substring(0,8), address: task });
+    }
 
     let transferDialogRef = this.dialog.open(TransferDialog, {
       width: '400px',
@@ -153,8 +199,24 @@ export class TokenViewComponent extends AccountComponent {
       data: { hash: "" }
     });
 
-    TaskDialogRef.afterClosed().subscribe(result => {
-      //this.onProposed.emit(result);
+    TaskDialogRef.afterClosed().subscribe(title => {
+      if (title) {
+        this.web3Service.FlexiTimeToken.at(this.token.address).then((factoryInstance) => {
+          return factoryInstance.createTask.sendTransaction(
+            {from: this.defaultAccount}
+          );
+        }).then((success) => {
+          if (!success) {
+            this.snackBar.open("Transaction failed!", "Dismiss", { duration: 2000 });
+          }
+          else {
+            this.snackBar.open("Transaction submitted!", "Dismiss", { duration: 2000 });
+          }
+        }).catch((e) => {
+          this.snackBar.open("Error creating agreement; see log.", "Dismiss", { duration: 2000 });
+          console.log(e);
+        });
+      }
     });
   }
 
