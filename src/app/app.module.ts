@@ -11,6 +11,7 @@ import { TokenViewModule } from './token/token-view/token-view.module';
 import { AppRoutingModule } from './app-routing.module';
 import { Web3Module } from "./web3/web3.module";
 import { AgreementDetailModule } from './agreement/agreement-detail/agreement-detail.module';
+import { TaskViewModule } from './task/task-view/task-view.module';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { AgreementDetailModule } from './agreement/agreement-detail/agreement-de
     MatCardModule,
     TokenViewModule,
     Web3Module,
-    AgreementDetailModule
+    AgreementDetailModule,
+    TaskViewModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -192,7 +192,6 @@ export class TokenViewComponent extends AccountComponent {
     });
   }
 
-  //TODO
   onTask() {
     let TaskDialogRef = this.dialog.open(TaskDialog, {
       width: '400px',
