@@ -7,6 +7,8 @@ import factory_artifacts from '../../../build/contracts/FlexiTimeFactory.json';
 import agreement_artifacts from '../../../build/contracts/FlexiTimeAgreement.json';
 import token_artifacts from '../../../build/contracts/FlexiTimeToken.json';
 import task_artifacts from '../../../build/contracts/FlexiTimeTask.json'
+import { Token } from "../token/token";
+import { Agreement } from "../agreement/agreement";
 
 @Injectable()
 export class Web3Service {
@@ -34,6 +36,12 @@ export class Web3Service {
 
   public sha3hex(input: string): string {
     return this.web3.utils.sha3(input, {encoding: "hex"});
+  }
+
+  public sign(address: string, input: string): Promise<string> {
+    //return this.windowRef.nativeWindow.web3.personal.sign(this.web3.utils.toHex("this is a very long message that keeps going and going and going"), address);
+    // TODO: seems to be address should be first in all the tutorials, but erros otherwise
+    return this.web3.eth.sign(input, address);
   }
 
   private checkAndRefreshWeb3() {

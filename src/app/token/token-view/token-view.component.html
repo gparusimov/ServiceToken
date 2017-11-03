@@ -1,0 +1,29 @@
+<mat-card>
+  <mat-card-title>FlexiTime Token</mat-card-title>
+  <mat-card-subtitle>{{ token?.address }}</mat-card-subtitle>
+  <mat-card-content>
+    <p>
+      Agreement Address:
+      <a *ngIf="token?.agreement?.address" [routerLink]="['/agreements/', token.agreement.address]">
+        {{ token.agreement.address }}
+      </a>
+    </p>
+    <p>
+      Current Balance: {{ token?.balances?.get(defaultAccount) }}
+    </p>
+    <p>
+      Task Balances:
+      <mat-list>
+        <mat-list-item *ngFor="let task of token?.tasks">
+          <a [routerLink]="['/tasks/', task]"> {{task}} </a>
+           : {{ token?.balances?.get(task) }}
+        </mat-list-item>
+      </mat-list>
+    </p>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button (click)="goBack()">Back</button>
+    <button mat-raised-button (click)="onTask()">New Task</button>
+    <button mat-raised-button (click)="onTransfer()">Transfer</button>
+  </mat-card-actions>
+</mat-card>

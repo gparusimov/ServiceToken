@@ -1,0 +1,27 @@
+<mat-card *ngIf="task">
+  <mat-card-title>FlexiTime Task</mat-card-title>
+  <mat-card-subtitle>{{ task.address }}</mat-card-subtitle>
+  <mat-card-content>
+    <p>
+      Token Address:
+      <a *ngIf="task.token" [routerLink]="['/tokens/', task.token]">
+        {{ task.token}}
+      </a>
+    </p>
+    <p>Issuer: {{ task.issuer }}</p>
+    <p>Beneficiary: {{ task.beneficiary }}</p>
+    <p>Balance: {{ task.balance }}</p>
+    <p>State: {{ state }}</p>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button (click)="goBack()">Back</button>
+    <span [hidden]='!inState("Created")'>
+      <span [hidden]='!isAccount("beneficiary")'>
+        <button mat-raised-button (click)="onSettle()">Settle</button>
+      </span>
+      <span [hidden]='!isAccount("issuer")'>
+        <button mat-raised-button (click)="onRefund()" >Refund</button>
+      </span>
+    </span>
+  </mat-card-actions>
+</mat-card>

@@ -1,0 +1,18 @@
+<h1 mat-dialog-title>Transfer Tokens</h1>
+
+<div mat-dialog-content>
+  <mat-form-field class="ftt-full-width">
+    <mat-select placeholder="Address" [(ngModel)]="data.transfer.address">
+      <mat-option *ngFor="let account of data.accounts" [value]="account.address">
+        {{ account.owner }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field class="ftt-full-width">
+    <input matInput placeholder="Amount" type="number" [(ngModel)]="data.transfer.amount" name="amount" required>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button tabindex="-1" [mat-dialog-close]="data.transfer">Submit</button>
+  <button mat-button tabindex="-1" (click)="onCancel()">Cancel</button>
+</div>

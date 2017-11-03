@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { TokenViewComponent } from './token-view.component'
+import { TaskViewComponent } from './task-view.component'
 
 const routes: Routes = [
   {
-    path: 'tokens/:address',
-    component: TokenViewComponent
+    path: 'tasks/:address',
+    component: TaskViewComponent
   }
 ];
 
@@ -13,4 +13,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class TokenViewRoutingModule { }
+export class TaskViewRoutingModule { }
+ 

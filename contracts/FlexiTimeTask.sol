@@ -7,6 +7,8 @@ contract FlexiTimeTask {
 
   enum States { Created, Settled, Refunded }
 
+  event StateChange(States indexed oldState, States indexed newState);
+
   States public state;
   FlexiTimeToken public token;
 
@@ -25,6 +27,7 @@ contract FlexiTimeTask {
     require(msg.sender == token.agreement().beneficiary());
     token.transfer(token.agreement().issuer(), token.balanceOf(this));
     state = States.Settled;
+    StateChange(States.Created, States.Settled);
   }
 
   /* Issuer is able to refund tokens in escrow back to beneficiary */
@@ -32,5 +35,6 @@ contract FlexiTimeTask {
     require(msg.sender == token.agreement().issuer());
     token.transfer(token.agreement().beneficiary(), token.balanceOf(this));
     state = States.Refunded;
+    StateChange(States.Created, States.Refunded);
   }
 }

@@ -1,16 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TokenViewRoutingModule } from './token-view-routing.module';
-import { TokenViewComponent } from './token-view.component';
+import { TaskViewRoutingModule } from './task-view-routing.module';
+import { TaskViewComponent } from './task-view.component';
 import { MatCardModule, MatButtonModule, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatDialogModule, MatListModule, MatSelectModule } from '@angular/material';
-import { TransferDialog, TaskDialog } from './token-view.component';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 @NgModule({
   imports: [
     CommonModule,
-    TokenViewRoutingModule,
+    TaskViewRoutingModule,
     MatCardModule,
     MatSnackBarModule,
     MatFormFieldModule,
@@ -22,7 +21,6 @@ import { RouterModule } from '@angular/router';
     FormsModule,
     RouterModule
   ],
-  declarations: [ TokenViewComponent, TransferDialog, TaskDialog ],
-  entryComponents : [ TransferDialog, TaskDialog ]
+  declarations: [TaskViewComponent]
 })
-export class TokenViewModule { }
+export class TaskViewModule { }

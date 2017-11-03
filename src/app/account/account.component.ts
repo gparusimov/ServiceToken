@@ -27,5 +27,4 @@ export abstract class AccountComponent implements OnInit, OnDestroy {
   }
 
   abstract web3OnAccount(): void;
-
 }

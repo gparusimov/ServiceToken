@@ -1,80 +1,31 @@
 <mat-card *ngIf="agreement">
-  <mat-card-title>FlexiTime Factory</mat-card-title>
-  <mat-card-subtitle>View Agreement</mat-card-subtitle>
+  <mat-card-title>FlexiTime Agreement</mat-card-title>
+  <mat-card-subtitle>{{ agreement.address }}</mat-card-subtitle>
   <mat-card-content>
-    <mat-list>
-      <mat-list-item>
-        <label class="ftt-view-label">Address: </label>
-        <span>{{ agreement.address }}</span>
-      </mat-list-item>
-      <mat-list-item>
-        <label class="ftt-view-label">Name: </label>
-        <span>{{ agreement.name }}</span>
-      </mat-list-item>
-      <mat-list-item>
-        <label class="ftt-view-label">Symbol: </label>
-        <span>{{ agreement.symbol }}</span>
-      </mat-list-item>
-      <mat-list-item>
-        <label class="ftt-view-label">Decimals: </label>
-        <span>{{ agreement.decimals }}</span>
-      </mat-list-item>
-      <mat-list-item>
-        <label class="ftt-view-label">Total Supply: </label>
-        <span>{{ agreement.totalSupply }}</span>
-      </mat-list-item>
-      <mat-list-item>
-        <label class="ftt-view-label">Valid From: </label>
-        <span>{{ agreement.validFrom | epoch | date:'y-MMMM-dd hh:mm' }}</span>
-      </mat-list-item>
-      <mat-list-item>
-        <label class="ftt-view-label">Expires End: </label>
-        <span>{{ agreement.expiresEnd | epoch | date:'y-MMMM-dd hh:mm' }}</span>
-      </mat-list-item>
-      <mat-list-item>
-        <label class="ftt-view-label">Issuer: </label>
-        <span>{{ agreement.issuer }}</span>
-      </mat-list-item>
-      <mat-list-item>
-        <label class="ftt-view-label">Beneficiary: </label>
-        <span>{{ agreement.beneficiary }}</span>
-      </mat-list-item>
-      <mat-list-item>
-        <label class="ftt-view-label">State: </label>
-        <span>{{ agreement.state | state }}</span>
-      </mat-list-item>
-      <mat-list-item>
-        <label class="ftt-view-label">Content Hash: </label>
-        <span>{{ agreement.contentHash }}</span>
-      </mat-list-item>
-      <mat-list-item>
-        <label class="ftt-view-label">Test Hash: </label>
-        <input type="file" (change)="onChange($event)">
-      </mat-list-item>
-      <mat-list-item>
-        <label class="ftt-view-label">Token: </label>
-        <a *ngIf="agreement.token" [routerLink]="['/tokens/', agreement.token]">
-          {{ agreement.token }}
-        </a>
-      </mat-list-item>
-    </mat-list>
-    <span [hidden]='!inState("Created")'>
-      <span [hidden]='!isAccount("issuer")'>
-        <button mat-raised-button (click)="propose()">Propose</button>
-      </span>
-    </span>
-    <span [hidden]='!inState("Proposed")'>
-      <span [hidden]='!isAccount("issuer")'>
-        <button mat-raised-button (click)="withdraw()">Withdraw</button>
-      </span>
-      <span [hidden]='!isAccount("beneficiary")'>
-        <button mat-raised-button (click)="accept()">Accept</button>
-        <button hidden=true mat-raised-button (click)="reject()">Reject</button>
-      </span>
-    </span>
+    <app-agreement-detail
+      [agreement]="this.agreement"
+      [account]="this.defaultAccount">
+    </app-agreement-detail>
   </mat-card-content>
   <mat-card-actions>
     <button mat-raised-button (click)="goBack()">Back</button>
-    <button mat-raised-button (click)="print()">Print</button>
+    <span [hidden]='!this.agreement.inState("Created")'>
+      <span [hidden]='!isAccount("issuer")'>
+        <button mat-raised-button (click)="onPropose()">Propose</button>
+        <button mat-raised-button (click)="onPrint()">Print</button>
+      </span>
+    </span>
+    <span [hidden]='!this.agreement.inState("Proposed")'>
+      <span [hidden]='!isAccount("issuer")'>
+        <button mat-raised-button (click)="onWithdraw()">Withdraw</button>
+      </span>
+      <span [hidden]='!isAccount("beneficiary")'>
+        <button mat-raised-button (click)="onAccept()">Accept</button>
+        <button mat-raised-button (click)="onReject()">Reject</button>
+      </span>
+    </span>
+    <span [hidden]='!this.agreement.inState("Accepted")'>
+      <button mat-raised-button (click)="onTest()">Test</button>
+    </span>
   </mat-card-actions>
 </mat-card>
