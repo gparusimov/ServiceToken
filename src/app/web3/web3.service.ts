@@ -30,6 +30,10 @@ export class Web3Service {
     setInterval(() => this.checkAndRefreshWeb3(), 100);
   }
 
+  public genesisBlock(): Promise<any> {
+    return this.web3.eth.getBlock(0);
+  }
+
   public sha3(input: string): string {
     return this.web3.utils.sha3(input);
   }

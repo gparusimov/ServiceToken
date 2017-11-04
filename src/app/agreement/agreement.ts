@@ -1,4 +1,5 @@
 export class Agreement {
+
   constructor(
     public address: string,
     public transaction: string,

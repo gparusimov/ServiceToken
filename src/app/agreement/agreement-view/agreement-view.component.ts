@@ -9,6 +9,8 @@ import { Router } from '@angular/router';
 import { Agreement } from "../agreement";
 import { default as pdfMake } from 'pdfmake/build/pdfmake';
 import { default as vfs } from 'pdfmake/build/vfs_fonts';
+import { default as Mustache } from 'mustache';
+import template from '../agreement.json';
 
 @Component({
   selector: 'app-agreement-view',
@@ -112,26 +114,49 @@ export class AgreementViewComponent extends AccountComponent {
     });
   }
 
-  onPrint() {
-    let docDefinition = {
-      styles: {
-        centerStyle: {
-         italic: true,
-         alignment: 'center'
-        }
-      },
-      header: 'FlexiTime Token Agreement',
-      footer: new Date(),
-      content: [
-        { text: 'FlexiTime Token Agreement', style: [ 'centerStyle' ] },
-        'Address: ' + this.agreement.address,
-        'Name: ' + this.agreement.name,
-        'Symbol: ' + this.agreement.symbol
-      ]
-    };
+  onDownload() {
+    let downloadDialogRef = this.dialog.open(DownloadDialog, {
+      width: '400px',
+      data: { agreement: {
+        issuerName: null,
+        beneficiaryName: null,
+        issuerAddress: null,
+        beneficiaryAddress: null,
+        price: 0,
+        notice: 0
+      }}
+    });
 
-    pdfMake.vfs = vfs.pdfMake.vfs;
-    pdfMake.createPdf(docDefinition).download('optionalName.pdf');
+    downloadDialogRef.afterClosed().subscribe(agreement => {
+
+      if (agreement) {
+
+        this.web3Service.genesisBlock().then((genesisBlock) => {
+          var view = {
+            validFrom: this.agreement.validFromISOString,
+            expiresEnd: this.agreement.expiresEndISOString,
+            beneficiary: this.agreement.beneficiary,
+            beneficiaryName: agreement.beneficiaryName,
+            beneficiaryAddress: agreement.beneficiaryAddress,
+            issuer: this.agreement.issuer,
+            issuerName: agreement.issuerName,
+            issuerAddress: agreement.issuerAddress,
+            agreementAddress: this.agreement.address,
+            genesisHash: genesisBlock.hash,
+            totalSupply: this.agreement.totalSupply,
+            price: agreement.price,
+            total: () => {
+              return this.agreement.totalSupply * agreement.price;
+            }
+          };
+
+          var output = Mustache.render(JSON.stringify(template), view);
+
+          pdfMake.vfs = vfs.pdfMake.vfs;
+          pdfMake.createPdf(JSON.parse(output)).download('fft-agreement.pdf');
+        });
+      }
+    });
   }
 
   onPropose() {
@@ -330,5 +355,22 @@ export class TestDialog {
     }
 
     reader.readAsBinaryString(file);
+  }
+}
+
+@Component({
+  selector: 'download-dialog',
+  templateUrl: 'download-dialog.html',
+})
+
+export class DownloadDialog {
+
+  constructor(
+    public dialogRef: MatDialogRef<DownloadDialog>,
+    private web3Service : Web3Service,
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
+
+  onCancel(): void {
+    this.dialogRef.close();
   }
 }

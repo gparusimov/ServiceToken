@@ -1,0 +1,25 @@
+<h1 mat-dialog-title>Download Agreement</h1>
+<div mat-dialog-content>
+  <mat-form-field class="ftt-full-width">
+    <input matInput placeholder="Issuer Name" [(ngModel)]="data.agreement.issuerName" name="issuerName" required>
+  </mat-form-field>
+  <mat-form-field class="ftt-full-width">
+    <input matInput placeholder="Issuer Address" [(ngModel)]="data.agreement.issuerAddress" name="issuerAddress" required>
+  </mat-form-field>
+  <mat-form-field class="ftt-full-width">
+    <input matInput placeholder="Beneficiary Name" [(ngModel)]="data.agreement.beneficiaryName" name="beneficiaryName" required>
+  </mat-form-field>
+  <mat-form-field class="ftt-full-width">
+    <input matInput placeholder="Beneficiary Address" [(ngModel)]="data.agreement.beneficiaryAddress" name="beneficiaryAddress" required>
+  </mat-form-field>
+  <mat-form-field class="ftt-full-width">
+    <input matInput placeholder="Price" type="number" [(ngModel)]="data.agreement.price" name="price" required>
+  </mat-form-field>
+  <mat-form-field class="ftt-full-width">
+    <input matInput placeholder="Notice" [(ngModel)]="data.agreement.notice" name="notice" required>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button tabindex="-1" [mat-dialog-close]="data.agreement">Download</button>
+  <button mat-button tabindex="-1" (click)="onCancel()">Cancel</button>
+</div>
