@@ -24,6 +24,7 @@ export class Agreement {
   public issuer: string;
   public beneficiary: string;
   public contentHash: string;
+  public price: number;
 
   constructor(public address: string) {
     this.state = States.Draft;

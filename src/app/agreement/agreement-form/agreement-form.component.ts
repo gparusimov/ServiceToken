@@ -77,6 +77,7 @@ export class AgreementFormComponent extends AccountComponent  {
         this.agreement.expiresEnd,
         this.agreement.issuer,
         this.agreement.beneficiary,
+        this.agreement.price,
         {from: this.defaultAccount}
       );
     }).then((success) => {

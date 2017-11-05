@@ -77,7 +77,7 @@ export class AgreementViewComponent extends AccountComponent {
 
     let keys = [
       'name', 'symbol', 'decimals', 'totalSupply', 'validFrom', 'expiresEnd',
-      'contentHash', 'issuer', 'beneficiary', 'state', 'token'
+      'contentHash', 'issuer', 'beneficiary', 'price', 'state', 'token'
     ];
 
     for (let key of keys){
@@ -200,7 +200,10 @@ export class AgreementViewComponent extends AccountComponent {
         this.web3Service.FlexiTimeAgreement.at(this.agreement.address).then((factoryInstance) => {
           return factoryInstance.accept.sendTransaction(
             singleHash,
-            {from: this.defaultAccount}
+            {
+              from: this.defaultAccount,
+              value: (this.agreement.totalSupply * this.agreement.price)
+            }
           );
         }).then((success) => {
           if (!success) {

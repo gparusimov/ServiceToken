@@ -42,6 +42,10 @@ export class Web3Service {
     return this.web3.utils.sha3(input, {encoding: "hex"});
   }
 
+  public toWei(amount: number, unit: string): string {
+    return this.web3.utils.toWei(amount, unit);
+  }
+
   public sign(address: string, input: string): Promise<string> {
     //return this.windowRef.nativeWindow.web3.personal.sign(this.web3.utils.toHex("this is a very long message that keeps going and going and going"), address);
     // TODO: seems to be address should be first in all the tutorials, but erros otherwise

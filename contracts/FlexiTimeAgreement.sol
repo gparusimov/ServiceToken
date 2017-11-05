@@ -24,6 +24,7 @@ contract FlexiTimeAgreement {
   bytes32 public contentHash;
   address public issuer;
   address public beneficiary;
+  uint256 public price;
 
   modifier onlyIssuer {
     require(msg.sender == issuer);
@@ -53,7 +54,8 @@ contract FlexiTimeAgreement {
     uint _validFrom,
     uint _expiresEnd,
     address _issuer,
-    address _beneficiary
+    address _beneficiary,
+    uint256 _price
     ) {
 
       name = _name;
@@ -64,6 +66,7 @@ contract FlexiTimeAgreement {
       expiresEnd = _expiresEnd;
       issuer = _issuer;
       beneficiary = _beneficiary;
+      price = _price;
 
       factory = FlexiTimeFactory(msg.sender);
       state = States.Created;
@@ -83,8 +86,11 @@ contract FlexiTimeAgreement {
   }
 
   /* beneficiary is able to agree to agreement proposal i.e. sign it, passing docId ass safety check*/
-  function accept(bytes32 _contentHash) onlyBeneficiary onlyProposed {
+  function accept(bytes32 _contentHash) onlyBeneficiary onlyProposed payable {
     require(HashLib.matches(contentHash, _contentHash)); // matches double hash in agreement to single hash in token
+    require(msg.value == totalSupply * price); // checks that enough ether has been sent to pay for contract
+
+    issuer.transfer(totalSupply * price); // transfer the ether balance
 
     contentHash = _contentHash;
     token = new FlexiTimeToken();

@@ -68,7 +68,7 @@ export class TokenViewComponent extends AccountComponent {
 
       let keys = [
         'name', 'symbol', 'decimals', 'totalSupply', 'validFrom', 'expiresEnd',
-        'contentHash', 'issuer', 'beneficiary', 'state', 'token'
+        'contentHash', 'issuer', 'beneficiary', 'price', 'state', 'token'
       ];
 
       for (let key of keys) {
