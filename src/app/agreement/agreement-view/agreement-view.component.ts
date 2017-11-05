@@ -73,9 +73,7 @@ export class AgreementViewComponent extends AccountComponent {
   }
 
   getAgreement(address: string): Promise<Agreement> {
-    let agreement = new Agreement(
-      address, "", null, null, null, null, null, null, null, null, null, null, null
-    );
+    let agreement = new Agreement(address);
 
     let keys = [
       'name', 'symbol', 'decimals', 'totalSupply', 'validFrom', 'expiresEnd',
@@ -133,8 +131,8 @@ export class AgreementViewComponent extends AccountComponent {
 
         this.web3Service.genesisBlock().then((genesisBlock) => {
           var view = {
-            validFrom: this.agreement.validFromISOString,
-            expiresEnd: this.agreement.expiresEndISOString,
+            validFrom: this.agreement.validFromAsISOString,
+            expiresEnd: this.agreement.expiresEndAsISOString,
             beneficiary: this.agreement.beneficiary,
             beneficiaryName: agreement.beneficiaryName,
             beneficiaryAddress: agreement.beneficiaryAddress,

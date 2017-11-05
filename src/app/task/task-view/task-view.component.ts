@@ -50,7 +50,7 @@ export class TaskViewComponent extends AccountComponent {
   }
 
   getTask(address: string): Promise<Task> {
-    let task = new Task(address, null, null, null, null, null);
+    let task = new Task(address);
 
     this.web3Service.FlexiTimeTask.at(address).then((factoryInstance) => {
       return factoryInstance.token.call();
@@ -104,31 +104,6 @@ export class TaskViewComponent extends AccountComponent {
     return Promise.resolve(task);
   }
 
-  get state():string {
-    if (this.task) {
-      return States[this.task.state];
-    } else {
-      return States[0];
-    }
-  }
-
-  inState(state: String): boolean {
-    if (this.task) {
-      return States[this.task.state] === state;
-    } else {
-      return false;
-    }
-  }
-
-  isAccount(account: string): boolean {
-    if (this.task[account]) {
-      return (this.task[account].toLowerCase() === this.defaultAccount.toLowerCase());
-    } else {
-      return false;
-    }
-  }
-
-  // TODO
   watchStateChanges() {
     this.web3Service.FlexiTimeTask.at(this.task.address).then ((taskInstance) => {
       return taskInstance.StateChange({fromBlock: "latest"});

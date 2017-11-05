@@ -11,15 +11,15 @@
     <p>Issuer: {{ task.issuer }}</p>
     <p>Beneficiary: {{ task.beneficiary }}</p>
     <p>Balance: {{ task.balance }}</p>
-    <p>State: {{ state }}</p>
+    <p>State: {{ task.stateAsString }}</p>
   </mat-card-content>
   <mat-card-actions>
     <button mat-raised-button (click)="goBack()">Back</button>
-    <span [hidden]='!inState("Created")'>
-      <span [hidden]='!isAccount("beneficiary")'>
+    <span [hidden]='!task.inState("Created")'>
+      <span [hidden]='!task.isAccountType(this.defaultAccount, "beneficiary")'>
         <button mat-raised-button (click)="onSettle()">Settle</button>
       </span>
-      <span [hidden]='!isAccount("issuer")'>
+      <span [hidden]='!task.isAccountType(this.defaultAccount, "issuer")'>
         <button mat-raised-button (click)="onRefund()" >Refund</button>
       </span>
     </span>

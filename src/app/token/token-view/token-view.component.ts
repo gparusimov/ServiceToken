@@ -58,7 +58,7 @@ export class TokenViewComponent extends AccountComponent {
 
   getToken(address: string): Promise<Token> {
     let token = new Token(
-      address, new Agreement("", "", "-1", null, null, null, null, null, null, null, null, null, null), null, new Map<string, number>()
+      address, new Agreement(null), null, new Map<string, number>()
     );
 
     this.web3Service.FlexiTimeToken.at(address).then((factoryInstance) => {
