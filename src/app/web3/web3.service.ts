@@ -9,6 +9,7 @@ import token_artifacts from '../../../build/contracts/FlexiTimeToken.json';
 import task_artifacts from '../../../build/contracts/FlexiTimeTask.json'
 import { Token } from "../token/token";
 import { Agreement } from "../agreement/agreement";
+import { default as CryptoJS } from 'crypto-js';
 
 @Injectable()
 export class Web3Service {
@@ -42,14 +43,12 @@ export class Web3Service {
     return this.web3.utils.sha3(input, {encoding: "hex"});
   }
 
-  public toWei(amount: number, unit: string): string {
-    return this.web3.utils.toWei(amount, unit);
+  public encrypt(plaintext: string): string {
+    return CryptoJS.AES.decrypt(plaintext, 'secret key 123').toString(CryptoJS.enc.Utf8);
   }
 
-  public sign(address: string, input: string): Promise<string> {
-    //return this.windowRef.nativeWindow.web3.personal.sign(this.web3.utils.toHex("this is a very long message that keeps going and going and going"), address);
-    // TODO: seems to be address should be first in all the tutorials, but erros otherwise
-    return this.web3.eth.sign(input, address);
+  public decrypt(ciphertext: string): string {
+    return CryptoJS.AES.encrypt(ciphertext, 'secret key 123').toString();
   }
 
   private checkAndRefreshWeb3() {

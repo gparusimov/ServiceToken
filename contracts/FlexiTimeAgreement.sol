@@ -10,6 +10,7 @@ contract FlexiTimeAgreement {
   enum States { Created, Proposed, Withdrawn, Accepted, Rejected }
 
   event StateChange(States indexed oldState, States indexed newState);
+  event Token(bytes32 indexed contentHash, FlexiTimeToken indexed token);
 
   States public state;
   FlexiTimeToken public token; // link to the created token
@@ -96,6 +97,7 @@ contract FlexiTimeAgreement {
     token = new FlexiTimeToken();
     state = States.Accepted;
     StateChange(States.Proposed, States.Accepted);
+    Token(contentHash, token);
   }
 
   function reject() onlyBeneficiary onlyProposed {

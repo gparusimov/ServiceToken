@@ -8,6 +8,8 @@
         {{ task.token}}
       </a>
     </p>
+    <p>Name: {{ task.name }}</p>
+    <p>Name: {{ this.web3Service.decrypt(task.name) }}</p>
     <p>Issuer: {{ task.issuer }}</p>
     <p>Beneficiary: {{ task.beneficiary }}</p>
     <p>Balance: {{ task.balance }}</p>
@@ -20,7 +22,7 @@
         <button mat-raised-button (click)="onSettle()">Settle</button>
       </span>
       <span [hidden]='!task.isAccountType(this.defaultAccount, "issuer")'>
-        <button mat-raised-button (click)="onRefund()" >Refund</button>
+        <button mat-raised-button (click)="onRefund()">Refund</button>
       </span>
     </span>
   </mat-card-actions>

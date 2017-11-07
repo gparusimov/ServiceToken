@@ -30,7 +30,6 @@ export class TaskViewComponent extends AccountComponent {
     super(web3Service);
   }
 
-  //TODO
   ngOnDestroy() {
     super.ngOnDestroy();
     this.filter.stopWatching((error, result) => {
@@ -93,13 +92,23 @@ export class TaskViewComponent extends AccountComponent {
       console.log(e);
     });
 
-    this.web3Service.FlexiTimeTask.at(address).then((factoryInstance) => {
-      return factoryInstance.state.call();
-    }).then((value) => {
-      task.state = value;
-    }).catch(function (e) {
-      console.log(e);
-    });
+    let keys = [
+      'name', 'state'
+    ];
+
+    for (let key of keys){
+      this.web3Service.FlexiTimeTask.at(address).then((factoryInstance) => {
+        if (factoryInstance[key]) {
+          return factoryInstance[key].call();
+        } else {
+          return null;
+        }
+      }).then((value) => {
+        task[key] = value;
+      }).catch(function (e) {
+        console.log(e);
+      });
+    }
 
     return Promise.resolve(task);
   }

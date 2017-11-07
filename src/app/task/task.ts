@@ -1,3 +1,5 @@
+import { default as CryptoJS } from 'crypto-js';
+
 export enum States {
   Draft = -1,
   Created,
@@ -6,6 +8,7 @@ export enum States {
 }
 
 export class Task {
+  public name: string;
   public token: string;
   public issuer: string;
   public beneficiary: string;
@@ -14,6 +17,10 @@ export class Task {
 
   constructor(public address: string) {
     this.state = States.Draft;
+  }
+
+  get plainName(): string {
+    return this.name;
   }
 
   get stateAsString(): string {

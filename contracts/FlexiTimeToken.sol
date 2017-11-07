@@ -28,8 +28,8 @@ contract FlexiTimeToken {
   }
 
   /* Create a new task where tokens can be sent into escrow */
-  function createTask() {
-    FlexiTimeTask task = new FlexiTimeTask();
+  function createTask(string name) {
+    FlexiTimeTask task = new FlexiTimeTask(name);
     tasks.push(task);
     Task(task);
   }

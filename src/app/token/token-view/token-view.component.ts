@@ -8,6 +8,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { MatSnackBar } from '@angular/material';
 import { Token } from "../token";
 import { Agreement } from "../../agreement/agreement";
+import { default as CryptoJS } from 'crypto-js';
 import 'rxjs/add/operator/switchMap';
 
 @Component({
@@ -198,10 +199,12 @@ export class TokenViewComponent extends AccountComponent {
       data: { hash: "" }
     });
 
-    TaskDialogRef.afterClosed().subscribe(title => {
-      if (title) {
+    TaskDialogRef.afterClosed().subscribe(name => {
+      if (name) {
         this.web3Service.FlexiTimeToken.at(this.token.address).then((factoryInstance) => {
           return factoryInstance.createTask.sendTransaction(
+            CryptoJS.AES.encrypt(name, 'secret key 123').toString(),
+            // name,
             {from: this.defaultAccount}
           );
         }).then((success) => {
