@@ -9,7 +9,6 @@ import token_artifacts from '../../../build/contracts/FlexiTimeToken.json';
 import task_artifacts from '../../../build/contracts/FlexiTimeTask.json'
 import { Token } from "../token/token";
 import { Agreement } from "../agreement/agreement";
-import { default as CryptoJS } from 'crypto-js';
 
 @Injectable()
 export class Web3Service {
@@ -41,14 +40,6 @@ export class Web3Service {
 
   public sha3hex(input: string): string {
     return this.web3.utils.sha3(input, {encoding: "hex"});
-  }
-
-  public encrypt(plaintext: string): string {
-    return CryptoJS.AES.decrypt(plaintext, 'secret key 123').toString(CryptoJS.enc.Utf8);
-  }
-
-  public decrypt(ciphertext: string): string {
-    return CryptoJS.AES.encrypt(ciphertext, 'secret key 123').toString();
   }
 
   private checkAndRefreshWeb3() {

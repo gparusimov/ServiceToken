@@ -9,7 +9,7 @@
       </a>
     </p>
     <p>Name: {{ task.name }}</p>
-    <p>Name: {{ this.web3Service.decrypt(task.name) }}</p>
+    <p>Name: {{ task.name | decrypt }}</p>
     <p>Issuer: {{ task.issuer }}</p>
     <p>Beneficiary: {{ task.beneficiary }}</p>
     <p>Balance: {{ task.balance }}</p>

@@ -204,7 +204,6 @@ export class TokenViewComponent extends AccountComponent {
         this.web3Service.FlexiTimeToken.at(this.token.address).then((factoryInstance) => {
           return factoryInstance.createTask.sendTransaction(
             CryptoJS.AES.encrypt(name, 'secret key 123').toString(),
-            // name,
             {from: this.defaultAccount}
           );
         }).then((success) => {
