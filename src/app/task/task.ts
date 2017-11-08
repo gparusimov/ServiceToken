@@ -12,6 +12,7 @@ export class Task {
   public beneficiary: string;
   public state: States;
   public balance: number;
+  public agreement: string;
 
   constructor(public address: string) {
     this.state = States.Draft;

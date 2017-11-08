@@ -108,7 +108,7 @@ export class AgreementViewComponent extends AccountComponent {
   onTest() {
     let testDialogRef = this.dialog.open(TestDialog, {
       width: '400px',
-      data: { hash: this.agreement.contentHash, isMatching: false }
+      data: { hash: this.agreement.contentHash, isMatching: false, agreement: this.agreement.address }
     });
   }
 
@@ -160,14 +160,14 @@ export class AgreementViewComponent extends AccountComponent {
   onPropose() {
     let proposeDialogRef = this.dialog.open(ProposeDialog, {
       width: '400px',
-      data: { hash: "" }
+      data: { hash: "", agreement: this.agreement.address }
     });
 
-    proposeDialogRef.afterClosed().subscribe(doubleHash => {
-      if (doubleHash) {
+    proposeDialogRef.afterClosed().subscribe(tripleHash => {
+      if (tripleHash) {
         this.web3Service.FlexiTimeAgreement.at(this.agreement.address).then((factoryInstance) => {
           return factoryInstance.propose.sendTransaction(
-            doubleHash,
+            tripleHash,
             {from: this.defaultAccount}
           );
         }).then((success) => {
@@ -190,16 +190,15 @@ export class AgreementViewComponent extends AccountComponent {
   onAccept() {
     let acceptDialogRef = this.dialog.open(AcceptDialog, {
       width: '400px',
-      data: { hash: "" }
+      data: { hash: "", agreement: this.agreement.address }
     });
 
-    acceptDialogRef.afterClosed().subscribe(singleHash => {
-      if (singleHash) {
-        console.log('accept');
+    acceptDialogRef.afterClosed().subscribe(doubleHash => {
+      if (doubleHash) {
 
         this.web3Service.FlexiTimeAgreement.at(this.agreement.address).then((factoryInstance) => {
           return factoryInstance.accept.sendTransaction(
-            singleHash,
+            doubleHash,
             {
               from: this.defaultAccount,
               value: (this.agreement.totalSupply * this.agreement.price)
@@ -280,13 +279,14 @@ export class ProposeDialog {
   }
 
   onChange(event) {
-    var file = event.srcElement.files[0];
-    console.log(file);
+    let file = event.srcElement.files[0];
 
-    var reader = new FileReader();
+    let reader = new FileReader();
 
     reader.onload = (e) => {
-      this.data.hash = this.web3Service.sha3hex(this.web3Service.sha3(reader.result));
+      let contentHash = this.web3Service.sha3(reader.result);
+      this.data.hash = this.web3Service.sha3hex(this.web3Service.sha3hex(contentHash));
+      localStorage.setItem(this.data.agreement, contentHash);
     }
 
     reader.readAsBinaryString(file);
@@ -316,7 +316,9 @@ export class AcceptDialog {
     var reader = new FileReader();
 
     reader.onload = (e) => {
-      this.data.hash = this.web3Service.sha3(reader.result);
+      let contentHash = this.web3Service.sha3(reader.result);
+      localStorage.setItem(this.data.agreement, contentHash);
+      this.data.hash = this.web3Service.sha3hex(contentHash);
     }
 
     reader.readAsBinaryString(file);
@@ -340,16 +342,18 @@ export class TestDialog {
   }
 
   onChange(event) {
-    var file = event.srcElement.files[0];
+    let file = event.srcElement.files[0];
     console.log(file);
 
-    var reader = new FileReader();
+    let reader = new FileReader();
 
     reader.onload = (e) => {
-      var hash = this.web3Service.sha3(reader.result);
+      let contentHash = this.web3Service.sha3(reader.result)
+      let hash = this.web3Service.sha3hex(contentHash);
 
       if (hash === this.data.hash) {
         this.data.isMatching = true;
+        localStorage.setItem(this.data.agreement, contentHash);
       } else {
         this.data.isMatching = false;
       }

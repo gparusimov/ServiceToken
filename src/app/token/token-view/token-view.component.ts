@@ -67,6 +67,10 @@ export class TokenViewComponent extends AccountComponent {
     }).then((address) => {
       token.agreement.address = address;
 
+      if (!localStorage.getItem(address)) {
+        this.snackBar.open("Content hash not set in local storage!", "Dismiss", { duration: 2000 });
+      }
+
       let keys = [
         'name', 'symbol', 'decimals', 'totalSupply', 'validFrom', 'expiresEnd',
         'contentHash', 'issuer', 'beneficiary', 'price', 'state', 'token'
@@ -203,7 +207,7 @@ export class TokenViewComponent extends AccountComponent {
       if (name) {
         this.web3Service.FlexiTimeToken.at(this.token.address).then((factoryInstance) => {
           return factoryInstance.createTask.sendTransaction(
-            CryptoJS.AES.encrypt(name, 'secret key 123').toString(),
+            CryptoJS.AES.encrypt(name, localStorage.getItem(this.token.agreement.address)).toString(),
             {from: this.defaultAccount}
           );
         }).then((success) => {

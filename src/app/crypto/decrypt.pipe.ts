@@ -6,9 +6,9 @@ import { default as CryptoJS } from 'crypto-js';
 })
 export class DecryptPipe implements PipeTransform {
 
-  transform(value: any, args?: any): any {
-    if (value) {
-      return CryptoJS.AES.decrypt(value, 'secret key 123').toString(CryptoJS.enc.Utf8);
+  transform(value: string, hash: string): string {
+    if (value && hash) {
+      return CryptoJS.AES.decrypt(value, localStorage.getItem(hash)).toString(CryptoJS.enc.Utf8);
     } else {
       return null;
     }

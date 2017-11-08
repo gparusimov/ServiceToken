@@ -68,6 +68,12 @@ export class TaskViewComponent extends AccountComponent {
         return factoryInstance.agreement.call();
       }).then((value) => {
 
+          task.agreement = value;
+
+          if (!localStorage.getItem(value)) {
+            this.snackBar.open("Content hash not set in local storage!", "Dismiss", { duration: 2000 });
+          }
+
           this.web3Service.FlexiTimeAgreement.at(value).then((factoryInstance) => {
             return factoryInstance.issuer.call();
           }).then((value) => {
