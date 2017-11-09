@@ -31,9 +31,8 @@
     "pdfmake": "^0.1.33",
     "rxjs": "^5.4.2",
     "zone.js": "^0.8.14",
+
     "@angular/cli": "1.4.7"
-  },
-  "devDependencies": {
     "@angular/compiler-cli": "^4.2.4",
     "@angular/language-service": "^4.2.4",
     "@types/jasmine": "~2.5.53",
@@ -54,5 +53,7 @@
     "tslint": "~5.7.0",
     "typescript": "~2.3.3",
     "web3": "1.0.0-beta.18"
+  },
+  "devDependencies": {
   }
 }
