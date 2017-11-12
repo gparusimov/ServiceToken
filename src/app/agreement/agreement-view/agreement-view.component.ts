@@ -11,6 +11,7 @@ import { default as pdfMake } from 'pdfmake/build/pdfmake';
 import { default as vfs } from 'pdfmake/build/vfs_fonts';
 import { default as Mustache } from 'mustache';
 import template from '../agreement.json';
+import { default as Web3 } from 'web3';
 
 @Component({
   selector: 'app-agreement-view',
@@ -99,7 +100,8 @@ export class AgreementViewComponent extends AccountComponent {
         beneficiaryName: null,
         issuerAddress: null,
         beneficiaryAddress: null,
-        price: 0,
+        price: this.agreement.price,
+        currency: "ETH",
         notice: 0
       }}
     });
@@ -121,9 +123,22 @@ export class AgreementViewComponent extends AccountComponent {
             agreementAddress: this.agreement.address,
             genesisHash: genesisBlock.hash,
             totalSupply: this.agreement.totalSupply,
-            price: agreement.price,
+            price: () => {
+              if (agreement.currency === "ETH") {
+                return Web3.utils.fromWei(agreement.price, "ether");
+              } else {
+                return agreement.price;
+              }
+            },
+            currency: agreement.currency,
             total: () => {
-              return this.agreement.totalSupply * agreement.price;
+              let total = this.agreement.totalSupply * agreement.price;
+              
+              if (agreement.currency === "ETH") {
+                return Web3.utils.fromWei(total, "ether");
+              } else {
+                return total;
+              }
             }
           };
 

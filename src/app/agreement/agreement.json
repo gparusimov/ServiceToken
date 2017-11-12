@@ -41,8 +41,8 @@
     { "text": "In the event that either Party wishes to terminate this Agreement prior to {{ expiresEnd }}, that Party will be required to provide {{ agreement.notice }} days' written notice to the other Party.", "margin": [0, 4, 0, 4] },
     { "text": "Consultant shall make a reasonable attempt to finish work in progress. Any retainer fees are due in full for the intended period of cancellation if proper notice is not provided.", "margin": [0, 4, 0, 4] },
     { "text": "Payment", "style": [ "boldStyle" ], "margin": [0, 4, 0, 4] },
-    { "text": "The Consultant will charge the Client a flat fee of ${{ total }} USD for the Services (the 'Payment').", "margin": [0, 4, 0, 4] },
-    { "text": "The Payment is based on the sale of {{ totalSupply }} Tokens at ${{ price }} USD per Token.", "margin": [0, 4, 0, 4] },
+    { "text": "The Consultant will charge the Client a flat fee of {{ total }} {{ currency }} for the Services (the 'Payment').", "margin": [0, 4, 0, 4] },
+    { "text": "The Payment is based on the sale of {{ totalSupply }} Tokens at {{ price }} {{ currency }} per Token.", "margin": [0, 4, 0, 4] },
     { "columns": [
       {
         "width": "50%",

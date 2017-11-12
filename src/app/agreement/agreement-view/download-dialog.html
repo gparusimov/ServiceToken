@@ -13,6 +13,15 @@
     <input matInput placeholder="Beneficiary Address" [(ngModel)]="data.agreement.beneficiaryAddress" name="beneficiaryAddress" required>
   </mat-form-field>
   <mat-form-field class="ftt-full-width">
+    <mat-select placeholder="Currency" [(ngModel)]="data.agreement.currency" name="currency" required>
+      <mat-option value="ETH">Ether</mat-option>
+      <mat-option value="USD">US Dollar</mat-option>
+      <mat-option value="EUR">Euro</mat-option>
+      <mat-option value="GBP">British Pound</mat-option>
+      <mat-option value="CHF">Switzerland Franc</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field class="ftt-full-width">
     <input matInput placeholder="Price" type="number" [(ngModel)]="data.agreement.price" name="price" required>
   </mat-form-field>
   <mat-form-field class="ftt-full-width">
