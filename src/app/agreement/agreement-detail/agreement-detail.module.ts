@@ -4,6 +4,7 @@ import { AgreementDetailComponent } from './agreement-detail.component';
 import { MatCardModule, MatButtonModule, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatDialogModule, MatListModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { WeiPipe } from '../../web3/wei.pipe';
 
 @NgModule({
   imports: [
@@ -18,7 +19,7 @@ import { RouterModule } from '@angular/router';
     FormsModule,
     RouterModule
   ],
-  declarations: [ AgreementDetailComponent ],
+  declarations: [ AgreementDetailComponent, WeiPipe ],
   exports: [ AgreementDetailComponent ]
 })
 export class AgreementDetailModule { }

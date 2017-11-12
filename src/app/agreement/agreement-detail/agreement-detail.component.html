@@ -25,7 +25,9 @@
       <input matInput placeholder="Beneficiary address" [(ngModel)]="agreement.beneficiary" name="beneficiary" required [disabled]='!this.agreement.inState("Draft")'>
     </mat-form-field>
     <mat-form-field class="ftt-full-width">
-      <input matInput placeholder="Token price (wei)" [(ngModel)]="agreement.price" type="number" name="price" required [disabled]='!this.agreement.inState("Draft")'>
+      <span matSuffix>(wei)</span>
+      <input matInput placeholder="Token price" [(ngModel)]="agreement.price" type="number" name="price" required [disabled]='!this.agreement.inState("Draft")'>
+      <mat-hint align="end">{{ agreement.price | wei:'ether' }} (ether)</mat-hint>
     </mat-form-field>
     <span [hidden]='!this.agreement.inState("Draft")'>
       <button mat-button type="submit" [disabled]="!agreementForm.form.valid">Create</button>
