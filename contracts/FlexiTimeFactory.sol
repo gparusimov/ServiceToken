@@ -16,12 +16,13 @@ contract FlexiTimeFactory {
     uint validFrom,
     uint expiresEnd,
     address issuer,
-    address beneficiary
+    address beneficiary,
+    uint256 price
     ) {
 
     FlexiTimeAgreement agreement = new FlexiTimeAgreement(
       name, symbol, decimals, totalSupply, validFrom,
-      expiresEnd, issuer, beneficiary);
+      expiresEnd, issuer, beneficiary, price);
 
     agreements.push(agreement);
     Agreement(agreement, msg.sender, issuer, beneficiary);

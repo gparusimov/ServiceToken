@@ -12,7 +12,7 @@
     <span [hidden]='!this.agreement.inState("Created")'>
       <span [hidden]='!isAccount("issuer")'>
         <button mat-raised-button (click)="onPropose()">Propose</button>
-        <button mat-raised-button (click)="onPrint()">Print</button>
+        <button mat-raised-button (click)="onDownload()">Download</button>
       </span>
     </span>
     <span [hidden]='!this.agreement.inState("Proposed")'>

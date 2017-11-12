@@ -2,10 +2,10 @@
 
 <div mat-dialog-content>
   <mat-form-field class="ftt-full-width">
-    <input matInput placeholder="Title" [(ngModel)]="data.title" name="title" required>
+    <input matInput placeholder="Name" [(ngModel)]="data.name" name="name" required>
   </mat-form-field>
 </div>
 <div mat-dialog-actions>
-  <button mat-button tabindex="-1" [mat-dialog-close]="data.title">Submit</button>
+  <button mat-button tabindex="-1" [mat-dialog-close]="data.name">Submit</button>
   <button mat-button tabindex="-1" (click)="onCancel()">Cancel</button>
 </div>

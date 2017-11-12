@@ -14,7 +14,7 @@
     <p>
       Task Balances:
       <mat-list>
-        <mat-list-item *ngFor="let task of token?.tasks">
+        <mat-list-item *ngFor="let task of token?.taskArray">
           <a [routerLink]="['/tasks/', task]"> {{task}} </a>
            : {{ token?.balances?.get(task) }}
         </mat-list-item>

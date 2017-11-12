@@ -8,6 +8,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { MatSnackBar } from '@angular/material';
 import { Token } from "../token";
 import { Agreement } from "../../agreement/agreement";
+import { default as CryptoJS } from 'crypto-js';
 import 'rxjs/add/operator/switchMap';
 
 @Component({
@@ -51,70 +52,49 @@ export class TokenViewComponent extends AccountComponent {
     .switchMap((params: ParamMap) => this.getToken(params.get('address')))
     .subscribe(token => {
       this.token = token;
+
       this.watchTasks();
       this.watchTransfers();
     });
   }
 
   getToken(address: string): Promise<Token> {
-    let token = new Token(
-      address, new Agreement("", "", "-1", null, null, null, null, null, null, null, null, null, null), null, new Map<string, number>()
-    );
-
-    this.web3Service.FlexiTimeToken.at(address).then((factoryInstance) => {
-      return factoryInstance.agreement.call();
-    }).then((address) => {
-      token.agreement.address = address;
-
-      let keys = [
-        'name', 'symbol', 'decimals', 'totalSupply', 'validFrom', 'expiresEnd',
-        'contentHash', 'issuer', 'beneficiary', 'state', 'token'
-      ];
-
-      for (let key of keys) {
-        this.web3Service.FlexiTimeAgreement.at(address).then((factoryInstance) => {
-          if (factoryInstance[key]) {
-            return factoryInstance[key].call();
-          } else {
-            return null;
-          }
-        }).then((value) => {
-          token.agreement[key] = value;
-        }).catch(function (e) {
-          console.log(e);
-        });
-      }
-    }).catch(function (e) {
-      console.log(e);
-    });
-
-    this.web3Service.FlexiTimeToken.at(address).then((factoryInstance) => {
-      return factoryInstance.getTasks.call();
-    }).then((value) => {
-      token.tasks = value;
-
-      for (let account of [this.defaultAccount].concat(value)) {
-        this.web3Service.FlexiTimeToken.at(address).then((factoryInstance) => {
-          return factoryInstance.balanceOf.call(account);
-        }).then((value) => {
-          token.balances.set(account, value);
-        }).catch(function (e) {
-          console.log(e);
-        });
+    return new Promise((resolve) => {
+      this.web3Service.token(address).then((token) => {
+        resolve(token);
+      })
+    })
+    .then((token: Token) => {
+      if (!localStorage.getItem(token.agreement.address)) {
+        this.snackBar.open("Content hash not set in local storage!", "Dismiss", { duration: 2000 });
       }
 
-    }).catch(function (e) {
-      console.log(e);
-    });
+      return new Promise((resolve) => {
+        let promises:Array<any> = [];
 
-    return Promise.resolve(token);
+        for (let account of [this.defaultAccount].concat(token.taskArray)) {
+          promises.push(new Promise((resolve) => {
+            this.web3Service.FlexiTimeToken.at(token.address).balanceOf.call(account).then((balance) => {
+              token.balances.set(account, balance);
+              resolve(balance);
+            }).catch(function (e) {
+              console.log(e);
+            });
+          }));
+        }
+
+        Promise.all(promises).then((results) => {
+          resolve(token);
+        })
+      })
+    });
   }
 
   watchTransfers() {
     this.web3Service.FlexiTimeToken.at(this.token.address).then ((tokenInstance) => {
       return tokenInstance.Transfer({
         fromBlock: "latest",
-        topics: [[this.defaultAccount].concat(this.token.tasks), [this.defaultAccount].concat(this.token.tasks), null]
+        topics: [[this.defaultAccount].concat(this.token.taskArray), [this.defaultAccount].concat(this.token.taskArray), null]
       });
     }).then ((transfers) => {
       transfers.watch((error, result) => {
@@ -154,7 +134,7 @@ export class TokenViewComponent extends AccountComponent {
     accounts.push({ owner: 'issuer', address: this.token.agreement.issuer });
     accounts.push({ owner: 'beneficiary', address: this.token.agreement.beneficiary  });
 
-    for (let task of this.token.tasks) {
+    for (let task of this.token.taskArray) {
       accounts.push({ owner: task.substring(0,8), address: task });
     }
 
@@ -198,10 +178,11 @@ export class TokenViewComponent extends AccountComponent {
       data: { hash: "" }
     });
 
-    TaskDialogRef.afterClosed().subscribe(title => {
-      if (title) {
+    TaskDialogRef.afterClosed().subscribe(name => {
+      if (name) {
         this.web3Service.FlexiTimeToken.at(this.token.address).then((factoryInstance) => {
           return factoryInstance.createTask.sendTransaction(
+            CryptoJS.AES.encrypt(name, localStorage.getItem(this.token.agreement.address)).toString(),
             {from: this.defaultAccount}
           );
         }).then((success) => {

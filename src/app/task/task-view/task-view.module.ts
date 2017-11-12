@@ -5,6 +5,7 @@ import { TaskViewComponent } from './task-view.component';
 import { MatCardModule, MatButtonModule, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatDialogModule, MatListModule, MatSelectModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { DecryptPipe } from '../../crypto/decrypt.pipe';
 
 @NgModule({
   imports: [
@@ -21,6 +22,9 @@ import { RouterModule } from '@angular/router';
     FormsModule,
     RouterModule
   ],
-  declarations: [TaskViewComponent]
+  declarations: [
+    TaskViewComponent,
+    DecryptPipe
+  ]
 })
 export class TaskViewModule { }

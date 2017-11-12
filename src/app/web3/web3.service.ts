@@ -9,6 +9,7 @@ import token_artifacts from '../../../build/contracts/FlexiTimeToken.json';
 import task_artifacts from '../../../build/contracts/FlexiTimeTask.json'
 import { Token } from "../token/token";
 import { Agreement } from "../agreement/agreement";
+import { Task } from "../task/task";
 
 @Injectable()
 export class Web3Service {
@@ -30,18 +31,83 @@ export class Web3Service {
     setInterval(() => this.checkAndRefreshWeb3(), 100);
   }
 
+  public task(address: string): Promise<any> {
+    return new Promise((resolve) => {
+      let task = new Task(address);
+      let taskInstance = this.FlexiTimeTask.at(address);
+
+      this.properties(task, taskInstance, ["name", "state", "token"]).then(() => {
+        resolve(task);
+      });
+    }).then((task: Task) => {
+      return new Promise((resolve) => {
+        this.token(task.token).then((token) => {
+          task.token = token;
+          resolve(task);
+        })
+      });
+    });
+  }
+
+  public token(address: string): Promise<any> {
+    return new Promise((resolve) => {
+      let token = new Token(address);
+      let tokenInstance = this.FlexiTimeToken.at(address);
+
+      this.properties(token, tokenInstance, ["taskArray", "agreement"]).then(() => {
+        resolve(token);
+      });
+    }).then((token: Token) => {
+      return new Promise((resolve) => {
+        this.agreement(token.agreement).then((agreement) => {
+          token.agreement = agreement;
+          resolve(token);
+        })
+      });
+    });
+  }
+
+  public agreement(address: string): Promise<any> {
+    return new Promise((resolve) => {
+      let agreement = new Agreement(address);
+      let agreementInstance = this.FlexiTimeAgreement.at(address);
+
+      this.properties(agreement, agreementInstance, [
+        "issuer", "beneficiary", "name", "symbol", "decimals", "totalSupply", "validFrom",
+        "expiresEnd", "contentHash", "price", "state", "token"
+      ]).then((results) => {
+        resolve(agreement);
+      });
+    });
+  }
+
+  private properties(object: any, instance: any, keys: string[]): Promise<any> {
+    let promises:Array<any> = [];
+
+    for (let key of keys) {
+      promises.push(new Promise((resolve) => {
+        instance[key].call().then((value) => {
+          object[key] = value;
+          resolve(value);
+        }).catch(function (e) {
+          console.log(e);
+        });
+      }));
+    }
+
+    return Promise.all(promises);
+  }
+
+  public genesisBlock(): Promise<any> {
+    return this.web3.eth.getBlock(0);
+  }
+
   public sha3(input: string): string {
     return this.web3.utils.sha3(input);
   }
 
   public sha3hex(input: string): string {
     return this.web3.utils.sha3(input, {encoding: "hex"});
-  }
-
-  public sign(address: string, input: string): Promise<string> {
-    //return this.windowRef.nativeWindow.web3.personal.sign(this.web3.utils.toHex("this is a very long message that keeps going and going and going"), address);
-    // TODO: seems to be address should be first in all the tutorials, but erros otherwise
-    return this.web3.eth.sign(input, address);
   }
 
   private checkAndRefreshWeb3() {
