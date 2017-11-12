@@ -45,7 +45,7 @@ contract FlexiTimeToken {
     Transfer(msg.sender, _to, _value);
   }
 
-  function getTasks() returns (FlexiTimeTask[] _tasks) {
+  function taskArray() returns (FlexiTimeTask[] _tasks) {
     return tasks;
   }
 }

@@ -73,28 +73,7 @@ export class AgreementViewComponent extends AccountComponent {
   }
 
   getAgreement(address: string): Promise<Agreement> {
-    let agreement = new Agreement(address);
-
-    let keys = [
-      'name', 'symbol', 'decimals', 'totalSupply', 'validFrom', 'expiresEnd',
-      'contentHash', 'issuer', 'beneficiary', 'price', 'state', 'token'
-    ];
-
-    for (let key of keys){
-      this.web3Service.FlexiTimeAgreement.at(address).then((factoryInstance) => {
-        if (factoryInstance[key]) {
-          return factoryInstance[key].call();
-        } else {
-          return null;
-        }
-      }).then((value) => {
-        agreement[key] = value;
-      }).catch(function (e) {
-        console.log(e);
-      });
-    }
-
-    return Promise.resolve(agreement);
+    return this.web3Service.agreement(address);
   }
 
   isAccount(account: string): boolean {

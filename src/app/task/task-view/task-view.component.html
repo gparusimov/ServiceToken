@@ -4,13 +4,13 @@
   <mat-card-content>
     <p>
       Token Address:
-      <a *ngIf="task.token" [routerLink]="['/tokens/', task.token]">
-        {{ task.token}}
+      <a *ngIf="task.token?.address" [routerLink]="['/tokens/', task.token?.address]">
+        {{ task.token?.address }}
       </a>
     </p>
-    <p>Name: <span *ngIf="task.agreement">{{ task.name | decrypt: task.agreement }}</span></p>
-    <p>Issuer: {{ task.issuer }}</p>
-    <p>Beneficiary: {{ task.beneficiary }}</p>
+    <p>Name: <span *ngIf="task.token?.agreement?.address">{{ task.name | decrypt: task.token?.agreement?.address }}</span></p>
+    <p>Issuer: {{ task.token?.agreement?.issuer }}</p>
+    <p>Beneficiary: {{ task.token?.agreement?.beneficiary }}</p>
     <p>Balance: {{ task.balance }}</p>
     <p>State: {{ task.stateAsString }}</p>
   </mat-card-content>

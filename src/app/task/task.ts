@@ -1,3 +1,5 @@
+import { Token } from "../token/token";
+
 export enum States {
   Draft = -1,
   Created,
@@ -6,20 +8,13 @@ export enum States {
 }
 
 export class Task {
-  private _name: string;
-  public token: string;
-  public issuer: string;
-  public beneficiary: string;
+  public name: string;
+  public token: any;
   public state: States;
   public balance: number;
-  public agreement: string;
 
   constructor(public address: string) {
     this.state = States.Draft;
-  }
-
-  get plainName(): string {
-    return this._name;
   }
 
   get stateAsString(): string {

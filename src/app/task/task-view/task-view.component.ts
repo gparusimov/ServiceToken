@@ -49,74 +49,18 @@ export class TaskViewComponent extends AccountComponent {
   }
 
   getTask(address: string): Promise<Task> {
-    let task = new Task(address);
-
-    this.web3Service.FlexiTimeTask.at(address).then((factoryInstance) => {
-      return factoryInstance.token.call();
-    }).then((value) => {
-      task.token = value;
-
-      this.web3Service.FlexiTimeToken.at(value).then((factoryInstance) => {
-        return factoryInstance.balanceOf.call(address);
-      }).then((value) => {
-        task.balance = value;
-      }).catch(function (e) {
-        console.log(e);
-      });
-
-      this.web3Service.FlexiTimeToken.at(value).then((factoryInstance) => {
-        return factoryInstance.agreement.call();
-      }).then((value) => {
-
-          task.agreement = value;
-
-          if (!localStorage.getItem(value)) {
-            this.snackBar.open("Content hash not set in local storage!", "Dismiss", { duration: 2000 });
-          }
-
-          this.web3Service.FlexiTimeAgreement.at(value).then((factoryInstance) => {
-            return factoryInstance.issuer.call();
-          }).then((value) => {
-            task.issuer = value;
-          }).catch(function (e) {
-            console.log(e);
-          });
-
-          this.web3Service.FlexiTimeAgreement.at(value).then((factoryInstance) => {
-            return factoryInstance.beneficiary.call();
-          }).then((value) => {
-            task.beneficiary = value;
-          }).catch(function (e) {
-            console.log(e);
-          });
-
-      }).catch(function (e) {
-        console.log(e);
-      });
-
-    }).catch(function (e) {
-      console.log(e);
+    return new Promise((resolve) => {
+      resolve(this.web3Service.task(address));
+    }).then((task: Task) => {
+      return new Promise((resolve) => {
+        this.web3Service.FlexiTimeToken.at(task.token.address).balanceOf.call(address).then((balance) => {
+          task.balance = balance;
+          resolve(task);
+        }).catch(function (e) {
+          console.log(e);
+        });
+      })
     });
-
-    let keys = [
-      'name', 'state'
-    ];
-
-    for (let key of keys){
-      this.web3Service.FlexiTimeTask.at(address).then((factoryInstance) => {
-        if (factoryInstance[key]) {
-          return factoryInstance[key].call();
-        } else {
-          return null;
-        }
-      }).then((value) => {
-        task[key] = value;
-      }).catch(function (e) {
-        console.log(e);
-      });
-    }
-
-    return Promise.resolve(task);
   }
 
   watchStateChanges() {
