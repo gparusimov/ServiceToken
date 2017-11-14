@@ -9,9 +9,12 @@ phases:
             - echo Installing source NPM dependencies...
             - npm install
             - npm install -g @angular/cli
+            - npm install -g truffle 
     build:
         commands:
             - echo Build started on `date`
+            - truffle compile
+            - truffle deploy
             - ng build --env=${BUILD_ENV}
     post_build:
          commands:
