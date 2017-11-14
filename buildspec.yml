@@ -2,7 +2,7 @@ version: 0.1
 environment_variables:
     plaintext:
         S3_BUCKET: "flexitimetoken"
-        BUILD_ENV: "prod"
+        BUILD_ENV: "dev"
 phases:
     install:
         commands:
@@ -13,8 +13,16 @@ phases:
     build:
         commands:
             - echo Build started on `date`
+
+            # Compile our contracts
             - truffle compile
+
+            # Build the webapp 
             - ng build --env=${BUILD_ENV}
+
+            # Copy the compiled contracts into the distribution
+            - cp -pR build dist
+
     post_build:
          commands:
             - aws s3 cp dist s3://${S3_BUCKET} --recursive
