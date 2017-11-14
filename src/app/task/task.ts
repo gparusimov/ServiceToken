@@ -26,8 +26,8 @@ export class Task {
   }
 
   isAccountType(account: string, type: string): boolean {
-    if (this[type]) {
-      return (this[type].toLowerCase() === account.toLowerCase());
+    if (this.token.agreement[type]) {
+      return (this.token.agreement[type].toLowerCase() === account.toLowerCase());
     } else {
       return false;
     }
