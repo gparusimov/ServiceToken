@@ -14,6 +14,9 @@ phases:
             - sed "s@RINKEBY_PROVIDER_URL@${PROVIDER_URL}@g" truffle.js > truffle.js.tmp
             - mv truffle.js.tmp truffle.js
 
+            - echo truffle.js content to follow ...
+            - cat truffle.js
+
             - echo Installing source NPM dependencies...
             - npm install
             - npm install -g @angular/cli
