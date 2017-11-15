@@ -11,6 +11,9 @@ phases:
         commands:
             - echo BUILD_ENV is ${BUILD_ENV}...
             - echo PROVIDER_URL is ${PROVIDER_URL}...
+            - sed 's/RINKEBY_PROVIDER_URL/${PROVIDER_URL}/g truffle.js > truffle.js.tmp
+            - mv truffle.js.tmp truffle.js
+            - cat truffle.js
 
             #- echo Installing source NPM dependencies...
             #- npm install
