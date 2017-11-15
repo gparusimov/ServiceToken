@@ -9,34 +9,38 @@ env:
 phases:
     install:
         commands:
-            - echo BUILD_ENV is ${BUILD_ENV}...
-            - echo PROVIDER_URL is ${PROVIDER_URL}...
+            # Token replacement so truffle can use our Infura  provider URL
+            # which we don't want to commit to GitHub
             - sed "s@RINKEBY_PROVIDER_URL@${PROVIDER_URL}@g" truffle.js > truffle.js.tmp
             - mv truffle.js.tmp truffle.js
-            - cat truffle.js
 
-            #- echo Installing source NPM dependencies...
-            #- npm install
-            #- npm install -g @angular/cli
-            #- npm install -g truffle@3.4.11  #This version until we solve the gas limit issue
-    #build:
-        #commands:
-            #- echo Build started on `date`
-#
-            ## Compile our contracts
-            #- truffle compile
-#
-            ## Build the webapp 
-            #- ng build --env=${BUILD_ENV}
-#
-            ## Copy the compiled contracts into the distribution
-            #- cp -pR build dist
-#
-    #post_build:
-         #commands:
-            #- aws s3 cp dist s3://${S3_BUCKET} --recursive
-            #- truffle migrate --network "rinkeby"
-            #- echo Build completed on `date`
+            - echo Installing source NPM dependencies...
+            - npm install
+            - npm install -g @angular/cli
+            - npm install -g truffle@3.4.11  #This version until we solve the gas limit issue
+    build:
+        commands:
+            - echo Build started on `date`
+
+            # Compile our contracts
+            - truffle compile
+
+            # Build the webapp 
+            - ng build --env=${BUILD_ENV}
+
+            # Copy the compiled contracts into the distribution
+            # so all DApp dependencies are satisfied
+            - cp -pR build dist
+
+    post_build:
+         commands:
+            # Put our webapp into S3 bucket
+            - aws s3 cp dist s3://${S3_BUCKET} --recursive
+
+            # Migrate aka deploy our contracts to the chain
+            - truffle migrate --network "rinkeby"
+
+            - echo Build completed on `date`
 artifacts:
     files:
         - '**/*'
