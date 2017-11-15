@@ -1,32 +1,39 @@
-version: 0.1
-environment_variables:
-    plaintext:
+version: 0.2
+
+env:
+    variables:
         S3_BUCKET: "flexitimetoken"
         BUILD_ENV: "dev"
+    parameter-store:
+        PROVIDER_URL: "Infura_Rinkeby_Key"
 phases:
     install:
         commands:
-            - echo Installing source NPM dependencies...
-            - npm install
-            - npm install -g @angular/cli
-            - npm install -g truffle@3.4.11  #This version until we solve the gas limit issue
-    build:
-        commands:
-            - echo Build started on `date`
+            - echo BUILD_ENV is ${BUILD_ENV}...
+            - echo PROVIDER_URL is ${PROVIDER_URL}...
 
-            # Compile our contracts
-            - truffle compile
-
-            # Build the webapp 
-            - ng build --env=${BUILD_ENV}
-
-            # Copy the compiled contracts into the distribution
-            - cp -pR build dist
-
-    post_build:
-         commands:
-            - aws s3 cp dist s3://${S3_BUCKET} --recursive
-            - echo Build completed on `date`
+            #- echo Installing source NPM dependencies...
+            #- npm install
+            #- npm install -g @angular/cli
+            #- npm install -g truffle@3.4.11  #This version until we solve the gas limit issue
+    #build:
+        #commands:
+            #- echo Build started on `date`
+#
+            ## Compile our contracts
+            #- truffle compile
+#
+            ## Build the webapp 
+            #- ng build --env=${BUILD_ENV}
+#
+            ## Copy the compiled contracts into the distribution
+            #- cp -pR build dist
+#
+    #post_build:
+         #commands:
+            #- aws s3 cp dist s3://${S3_BUCKET} --recursive
+            #- truffle migrate --network "rinkeby"
+            #- echo Build completed on `date`
 artifacts:
     files:
         - '**/*'
