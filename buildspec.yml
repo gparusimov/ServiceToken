@@ -26,7 +26,7 @@ phases:
             - truffle compile
 
             # Build the webapp 
-            - ng build --env=${BUILD_ENV}
+            - ng build --env=$BUILD_ENV
 
             # Copy the compiled contracts into the distribution
             # so all DApp dependencies are satisfied
@@ -35,7 +35,7 @@ phases:
     post_build:
          commands:
             # Put our webapp into S3 bucket
-            - aws s3 cp dist s3://${S3_BUCKET} --recursive
+            - aws s3 cp dist s3://$S3_BUCKET --recursive
 
             # Migrate aka deploy our contracts to the chain
             - truffle migrate --network "rinkeby"
