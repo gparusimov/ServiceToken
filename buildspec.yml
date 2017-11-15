@@ -9,7 +9,7 @@ phases:
             - echo Installing source NPM dependencies...
             - npm install
             - npm install -g @angular/cli
-            - npm install -g truffle 
+            - npm install -g truffle@3.4.11  #This version until we solve the gas limit issue
     build:
         commands:
             - echo Build started on `date`
