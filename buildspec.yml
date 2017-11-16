@@ -31,6 +31,9 @@ phases:
             # Compile our contracts
             - truffle compile
 
+            # Migrate aka deploy our contracts to the chain
+            - truffle migrate --network "rinkeby"
+
             # Build the webapp 
             - ng build --env=$BUILD_ENV
 
@@ -42,9 +45,6 @@ phases:
          commands:
             # Put our webapp into S3 bucket
             - aws s3 cp dist s3://$S3_BUCKET --recursive
-
-            # Migrate aka deploy our contracts to the chain
-            - truffle migrate --network "rinkeby"
 
             - echo Build completed on `date`
 artifacts:
