@@ -18,7 +18,6 @@ phases:
             - sed "s@MNEMONIC@${WALLET_MNEMONIC}@g" truffle.js > truffle.js.tmp
             - mv truffle.js.tmp truffle.js
 
-            - echo Customised truffle.js :: 
             - cat truffle.js
 
             - echo Installing source NPM dependencies...
