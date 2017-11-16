@@ -6,6 +6,7 @@ env:
         BUILD_ENV: "dev"
     parameter-store:
         PROVIDER_URL: "Infura_Rinkeby_Key"
+        WALLET_MNEMONIC: "HDWallet_Mnemonic"
 phases:
     install:
         commands:
@@ -14,7 +15,10 @@ phases:
             - sed "s@RINKEBY_PROVIDER_URL@${PROVIDER_URL}@g" truffle.js > truffle.js.tmp
             - mv truffle.js.tmp truffle.js
 
-            - echo truffle.js content to follow ...
+            - sed "s@MNEMONIC@${WALLET_MNEMONIC}@g" truffle.js > truffle.js.tmp
+            - mv truffle.js.tmp truffle.js
+
+            - echo Customised truffle.js :: 
             - cat truffle.js
 
             - echo Installing source NPM dependencies...
