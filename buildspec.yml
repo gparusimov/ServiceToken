@@ -25,6 +25,7 @@ phases:
 
             - npm install -g @angular/cli
             - npm install -g truffle@3.4.11  #This version until we solve the gas limit issue
+            - npm install truffle-hdwallet-provider@0.0.3
     build:
         commands:
             - echo Build started on `date`
