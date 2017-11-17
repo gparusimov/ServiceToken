@@ -39,16 +39,13 @@ phases:
             # Build the webapp 
             - ng build --env=$BUILD_ENV
 
-            # Copy the compiled contracts into the distribution
-            # so all DApp dependencies are satisfied
-            - cp -pR build dist
-
     post_build:
          commands:
             # Put our webapp into S3 bucket, after cleaning out all older content
             # (easiest way to ensure dependencies are clean)
-            - aws s3 rm s3://mybucket --recursive
+            - aws s3 rm s3://$S3_BUCKET --recursive
             - aws s3 cp dist s3://$S3_BUCKET --recursive
+            - aws s3 cp build s3://$S3_BUCKET/build --recursive
 
             - echo Build completed on `date`
 artifacts:
