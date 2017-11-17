@@ -30,9 +30,9 @@ phases:
             - echo Build started on `date`
 
             # Compile our contracts
-            - truffle compile
+            # - truffle compile
 
-            # Migrate aka deploy our contracts to the chain
+            # Compile and deploy our contracts to the chain
             - truffle migrate --network "rinkeby"
 
             # Build the webapp 
@@ -44,7 +44,9 @@ phases:
 
     post_build:
          commands:
-            # Put our webapp into S3 bucket
+            # Put our webapp into S3 bucket, after cleaning out all older content
+            # (easiest way to ensure dependencies are clean)
+            - aws s3 rm s3://mybucket --recursive
             - aws s3 cp dist s3://$S3_BUCKET --recursive
 
             - echo Build completed on `date`
