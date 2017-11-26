@@ -1,5 +1,5 @@
 ---
 title: Introduction
-layout: doc-page
+layout: default
 ---
 Hello!
