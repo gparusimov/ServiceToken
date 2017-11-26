@@ -1,11 +1,11 @@
 {% include header.md %}
 
-  hello
+  hello3
 
   <div class="container-lg p-responsive">
     {{ content }}
   </div>
   
-  goodbuy
+  goodbuy3
 
 {% include footer.md %}
