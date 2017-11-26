@@ -1,6 +1,6 @@
 import { AppPage } from './app.po';
 
-describe('ftt App', () => {
+describe('ServiceToken App', () => {
   let page: AppPage;
 
   beforeEach(() => {

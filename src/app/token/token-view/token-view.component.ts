@@ -74,7 +74,7 @@ export class TokenViewComponent extends AccountComponent {
 
         for (let account of [this.defaultAccount].concat(token.taskArray)) {
           promises.push(new Promise((resolve) => {
-            this.web3Service.FlexiTimeToken.at(token.address).balanceOf.call(account).then((balance) => {
+            this.web3Service.ServiceToken.at(token.address).balanceOf.call(account).then((balance) => {
               token.balances.set(account, balance);
               resolve(balance);
             }).catch(function (e) {
@@ -91,7 +91,7 @@ export class TokenViewComponent extends AccountComponent {
   }
 
   watchTransfers() {
-    this.web3Service.FlexiTimeToken.at(this.token.address).then ((tokenInstance) => {
+    this.web3Service.ServiceToken.at(this.token.address).then ((tokenInstance) => {
       return tokenInstance.Transfer({
         fromBlock: "latest",
         topics: [[this.defaultAccount].concat(this.token.taskArray), [this.defaultAccount].concat(this.token.taskArray), null]
@@ -113,7 +113,7 @@ export class TokenViewComponent extends AccountComponent {
   }
 
   watchTasks() {
-    this.web3Service.FlexiTimeToken.at(this.token.address).then ((tokenInstance) => {
+    this.web3Service.ServiceToken.at(this.token.address).then ((tokenInstance) => {
       return tokenInstance.Task({fromBlock: "latest"});
     }).then ((tasks) => {
       tasks.watch((error, result) => {
@@ -151,7 +151,7 @@ export class TokenViewComponent extends AccountComponent {
 
     transferDialogRef.afterClosed().subscribe(transfer => {
       if (transfer) {
-        this.web3Service.FlexiTimeToken.at(this.token.address).then((factoryInstance) => {
+        this.web3Service.ServiceToken.at(this.token.address).then((factoryInstance) => {
           return factoryInstance.transfer.sendTransaction(
             transfer.address,
             transfer.amount,
@@ -180,7 +180,7 @@ export class TokenViewComponent extends AccountComponent {
 
     TaskDialogRef.afterClosed().subscribe(name => {
       if (name) {
-        this.web3Service.FlexiTimeToken.at(this.token.address).then((factoryInstance) => {
+        this.web3Service.ServiceToken.at(this.token.address).then((factoryInstance) => {
           return factoryInstance.createTask.sendTransaction(
             CryptoJS.AES.encrypt(name, localStorage.getItem(this.token.agreement.address)).toString(),
             {from: this.defaultAccount}

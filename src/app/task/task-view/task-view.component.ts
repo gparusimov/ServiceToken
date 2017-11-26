@@ -53,7 +53,7 @@ export class TaskViewComponent extends AccountComponent {
       resolve(this.web3Service.task(address));
     }).then((task: Task) => {
       return new Promise((resolve) => {
-        this.web3Service.FlexiTimeToken.at(task.token.address).balanceOf.call(address).then((balance) => {
+        this.web3Service.ServiceToken.at(task.token.address).balanceOf.call(address).then((balance) => {
           task.balance = balance;
           resolve(task);
         }).catch(function (e) {
@@ -64,7 +64,7 @@ export class TaskViewComponent extends AccountComponent {
   }
 
   watchStateChanges() {
-    this.web3Service.FlexiTimeTask.at(this.task.address).then ((taskInstance) => {
+    this.web3Service.ServiceTask.at(this.task.address).then ((taskInstance) => {
       return taskInstance.StateChange({fromBlock: "latest"});
     }).then ((stateChanges) => {
       stateChanges.watch((error, result) => {
@@ -81,7 +81,7 @@ export class TaskViewComponent extends AccountComponent {
   }
 
   onSettle() {
-    this.web3Service.FlexiTimeTask.at(this.task.address).then((factoryInstance) => {
+    this.web3Service.ServiceTask.at(this.task.address).then((factoryInstance) => {
       return factoryInstance.settle.sendTransaction(
         {from: this.defaultAccount}
       );
@@ -99,7 +99,7 @@ export class TaskViewComponent extends AccountComponent {
   }
 
   onRefund() {
-    this.web3Service.FlexiTimeTask.at(this.task.address).then((factoryInstance) => {
+    this.web3Service.ServiceTask.at(this.task.address).then((factoryInstance) => {
       return factoryInstance.refund.sendTransaction(
         {from: this.defaultAccount}
       );

@@ -1,18 +1,18 @@
 <h1 mat-dialog-title>Download Agreement</h1>
 <div mat-dialog-content>
-  <mat-form-field class="ftt-full-width">
+  <mat-form-field class="st-full-width">
     <input matInput placeholder="Issuer Name" [(ngModel)]="data.agreement.issuerName" name="issuerName" required>
   </mat-form-field>
-  <mat-form-field class="ftt-full-width">
+  <mat-form-field class="st-full-width">
     <input matInput placeholder="Issuer Address" [(ngModel)]="data.agreement.issuerAddress" name="issuerAddress" required>
   </mat-form-field>
-  <mat-form-field class="ftt-full-width">
+  <mat-form-field class="st-full-width">
     <input matInput placeholder="Beneficiary Name" [(ngModel)]="data.agreement.beneficiaryName" name="beneficiaryName" required>
   </mat-form-field>
-  <mat-form-field class="ftt-full-width">
+  <mat-form-field class="st-full-width">
     <input matInput placeholder="Beneficiary Address" [(ngModel)]="data.agreement.beneficiaryAddress" name="beneficiaryAddress" required>
   </mat-form-field>
-  <mat-form-field class="ftt-full-width">
+  <mat-form-field class="st-full-width">
     <mat-select placeholder="Currency" [(ngModel)]="data.agreement.currency" name="currency" required>
       <mat-option value="ETH">Ether</mat-option>
       <mat-option value="USD">US Dollar</mat-option>
@@ -21,10 +21,10 @@
       <mat-option value="CHF">Switzerland Franc</mat-option>
     </mat-select>
   </mat-form-field>
-  <mat-form-field class="ftt-full-width">
+  <mat-form-field class="st-full-width">
     <input matInput placeholder="Price" type="number" [(ngModel)]="data.agreement.price" name="price" required>
   </mat-form-field>
-  <mat-form-field class="ftt-full-width">
+  <mat-form-field class="st-full-width">
     <input matInput placeholder="Notice Period" [(ngModel)]="data.agreement.notice" name="notice" required>
   </mat-form-field>
 </div>

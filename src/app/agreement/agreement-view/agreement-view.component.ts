@@ -57,7 +57,7 @@ export class AgreementViewComponent extends AccountComponent {
   }
 
   watchAgreements() {
-    this.web3Service.FlexiTimeAgreement.at(this.agreement.address).then ((agreementInstance) => {
+    this.web3Service.ServiceAgreement.at(this.agreement.address).then ((agreementInstance) => {
       return agreementInstance.StateChange({fromBlock: "latest"});
     }).then ((stateChanges) => {
       stateChanges.watch((error, result) => {
@@ -121,6 +121,7 @@ export class AgreementViewComponent extends AccountComponent {
             issuerName: agreement.issuerName,
             issuerAddress: agreement.issuerAddress,
             agreementAddress: this.agreement.address,
+            notice: agreement.notice,
             genesisHash: genesisBlock.hash,
             totalSupply: this.agreement.totalSupply,
             price: () => {
@@ -133,7 +134,7 @@ export class AgreementViewComponent extends AccountComponent {
             currency: agreement.currency,
             total: () => {
               let total = this.agreement.totalSupply * agreement.price;
-              
+
               if (agreement.currency === "ETH") {
                 return Web3.utils.fromWei(total, "ether");
               } else {
@@ -159,7 +160,7 @@ export class AgreementViewComponent extends AccountComponent {
 
     proposeDialogRef.afterClosed().subscribe(tripleHash => {
       if (tripleHash) {
-        this.web3Service.FlexiTimeAgreement.at(this.agreement.address).then((factoryInstance) => {
+        this.web3Service.ServiceAgreement.at(this.agreement.address).then((factoryInstance) => {
           return factoryInstance.propose.sendTransaction(
             tripleHash,
             {from: this.defaultAccount}
@@ -190,7 +191,7 @@ export class AgreementViewComponent extends AccountComponent {
     acceptDialogRef.afterClosed().subscribe(doubleHash => {
       if (doubleHash) {
 
-        this.web3Service.FlexiTimeAgreement.at(this.agreement.address).then((factoryInstance) => {
+        this.web3Service.ServiceAgreement.at(this.agreement.address).then((factoryInstance) => {
           return factoryInstance.accept.sendTransaction(
             doubleHash,
             {
@@ -216,7 +217,7 @@ export class AgreementViewComponent extends AccountComponent {
   }
 
   onReject () {
-    this.web3Service.FlexiTimeAgreement.at(this.agreement.address).then((factoryInstance) => {
+    this.web3Service.ServiceAgreement.at(this.agreement.address).then((factoryInstance) => {
       return factoryInstance.reject.sendTransaction(
         {from: this.defaultAccount}
       );
@@ -234,7 +235,7 @@ export class AgreementViewComponent extends AccountComponent {
   }
 
   onWithdraw() {
-    this.web3Service.FlexiTimeAgreement.at(this.agreement.address).then((factoryInstance) => {
+    this.web3Service.ServiceAgreement.at(this.agreement.address).then((factoryInstance) => {
       return factoryInstance.withdraw.sendTransaction(
         {from: this.defaultAccount}
       );

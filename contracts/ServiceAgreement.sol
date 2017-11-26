@@ -1,20 +1,20 @@
 pragma solidity ^0.4.4;
 
-import "./FlexiTimeToken.sol";
-import "./FlexiTimeFactory.sol";
+import "./ServiceToken.sol";
+import "./AgreementFactory.sol";
 import "./HashLib.sol";
 
 /* Created by factory in order to sign agreement and generate token contract */
-contract FlexiTimeAgreement {
+contract ServiceAgreement {
 
   enum States { Created, Proposed, Withdrawn, Accepted, Rejected }
 
   event StateChange(States indexed oldState, States indexed newState);
-  event Token(bytes32 indexed contentHash, FlexiTimeToken indexed token);
+  event Token(bytes32 indexed contentHash, ServiceToken indexed token);
 
   States public state;
-  FlexiTimeToken public token; // link to the created token
-  FlexiTimeFactory public factory; // can be used to validate that contract is recognised by factory
+  ServiceToken public token; // link to the created token
+  AgreementFactory public factory; // can be used to validate that contract is recognised by factory
 
   string public name;
   string public symbol;
@@ -47,7 +47,7 @@ contract FlexiTimeAgreement {
     _;
   }
 
-  function FlexiTimeAgreement(
+  function ServiceAgreement(
     string _name,
     string _symbol,
     uint8 _decimals,
@@ -69,7 +69,7 @@ contract FlexiTimeAgreement {
       beneficiary = _beneficiary;
       price = _price;
 
-      factory = FlexiTimeFactory(msg.sender);
+      factory = AgreementFactory(msg.sender);
       state = States.Created;
   }
 
@@ -94,7 +94,7 @@ contract FlexiTimeAgreement {
     issuer.transfer(totalSupply * price); // transfer the ether balance
 
     contentHash = _contentHash;
-    token = new FlexiTimeToken();
+    token = new ServiceToken();
     state = States.Accepted;
     StateChange(States.Proposed, States.Accepted);
     Token(contentHash, token);

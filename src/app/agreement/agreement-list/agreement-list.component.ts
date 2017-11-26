@@ -34,7 +34,7 @@ export class AgreementListComponent extends AccountComponent {
   }
 
   setAgreements() {
-    this.web3Service.FlexiTimeFactory.deployed().then((factoryInstance) => {
+    this.web3Service.AgreementFactory.deployed().then((factoryInstance) => {
       return factoryInstance.getAgreements.call();
     }).then((agreements) => {
       this.agreements = agreements;
@@ -44,7 +44,7 @@ export class AgreementListComponent extends AccountComponent {
   }
 
   watchAgreements() {
-    this.web3Service.FlexiTimeFactory.deployed().then ((factoryInstance) => {
+    this.web3Service.AgreementFactory.deployed().then ((factoryInstance) => {
       return factoryInstance.Agreement({fromBlock: "latest"});
     }).then ((agreements) => {
       agreements.watch((error, result) => {

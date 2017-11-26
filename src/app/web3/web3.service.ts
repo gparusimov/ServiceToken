@@ -3,10 +3,10 @@ import { default as Web3 } from 'web3';
 import { WindowRefService } from "../window-ref/window-ref.service";
 import { BehaviorSubject } from "rxjs";
 import { default as contract } from 'truffle-contract';
-import factory_artifacts from '../../../build/contracts/FlexiTimeFactory.json';
-import agreement_artifacts from '../../../build/contracts/FlexiTimeAgreement.json';
-import token_artifacts from '../../../build/contracts/FlexiTimeToken.json';
-import task_artifacts from '../../../build/contracts/FlexiTimeTask.json'
+import factory_artifacts from '../../../build/contracts/AgreementFactory.json';
+import agreement_artifacts from '../../../build/contracts/ServiceAgreement.json';
+import token_artifacts from '../../../build/contracts/ServiceToken.json';
+import task_artifacts from '../../../build/contracts/ServiceTask.json'
 import { Token } from "../token/token";
 import { Agreement } from "../agreement/agreement";
 import { Task } from "../task/task";
@@ -17,24 +17,24 @@ export class Web3Service {
   private web3 : Web3;
   private accounts : string[];
   public ready : boolean = false;
-  public FlexiTimeFactory : any;
-  public FlexiTimeAgreement : any;
-  public FlexiTimeToken : any;
-  public FlexiTimeTask : any;
+  public AgreementFactory : any;
+  public ServiceAgreement : any;
+  public ServiceToken : any;
+  public ServiceTask : any;
   public accountsObservable = new BehaviorSubject<string[]>([]);
 
   constructor(private windowRef : WindowRefService) {
-    this.FlexiTimeFactory = contract(factory_artifacts);
-    this.FlexiTimeAgreement = contract(agreement_artifacts);
-    this.FlexiTimeToken = contract(token_artifacts);
-    this.FlexiTimeTask = contract(task_artifacts);
+    this.AgreementFactory = contract(factory_artifacts);
+    this.ServiceAgreement = contract(agreement_artifacts);
+    this.ServiceToken = contract(token_artifacts);
+    this.ServiceTask = contract(task_artifacts);
     setInterval(() => this.checkAndRefreshWeb3(), 100);
   }
 
   public task(address: string): Promise<any> {
     return new Promise((resolve) => {
       let task = new Task(address);
-      let taskInstance = this.FlexiTimeTask.at(address);
+      let taskInstance = this.ServiceTask.at(address);
 
       this.properties(task, taskInstance, ["name", "state", "token"]).then(() => {
         resolve(task);
@@ -52,7 +52,7 @@ export class Web3Service {
   public token(address: string): Promise<any> {
     return new Promise((resolve) => {
       let token = new Token(address);
-      let tokenInstance = this.FlexiTimeToken.at(address);
+      let tokenInstance = this.ServiceToken.at(address);
 
       this.properties(token, tokenInstance, ["taskArray", "agreement"]).then(() => {
         resolve(token);
@@ -70,7 +70,7 @@ export class Web3Service {
   public agreement(address: string): Promise<any> {
     return new Promise((resolve) => {
       let agreement = new Agreement(address);
-      let agreementInstance = this.FlexiTimeAgreement.at(address);
+      let agreementInstance = this.ServiceAgreement.at(address);
 
       this.properties(agreement, agreementInstance, [
         "issuer", "beneficiary", "name", "symbol", "decimals", "totalSupply", "validFrom",
@@ -121,10 +121,10 @@ export class Web3Service {
       if (this.windowRef.nativeWindow.web3) {
         console.log('Using provided web3 implementation');
         this.web3 = new Web3(this.windowRef.nativeWindow.web3.currentProvider);
-        this.FlexiTimeFactory.setProvider(this.web3.currentProvider);
-        this.FlexiTimeAgreement.setProvider(this.web3.currentProvider);
-        this.FlexiTimeToken.setProvider(this.web3.currentProvider);
-        this.FlexiTimeTask.setProvider(this.web3.currentProvider);
+        this.AgreementFactory.setProvider(this.web3.currentProvider);
+        this.ServiceAgreement.setProvider(this.web3.currentProvider);
+        this.ServiceToken.setProvider(this.web3.currentProvider);
+        this.ServiceTask.setProvider(this.web3.currentProvider);
         this.refreshAccounts();
       }
       else {

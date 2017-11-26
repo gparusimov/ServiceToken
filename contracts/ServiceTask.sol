@@ -1,9 +1,9 @@
 pragma solidity ^0.4.4;
 
-import "./FlexiTimeToken.sol";
+import "./ServiceToken.sol";
 
 /* Tracks under escrow token usage per specific task */
-contract FlexiTimeTask {
+contract ServiceTask {
 
   enum States { Created, Settled, Refunded }
 
@@ -11,16 +11,16 @@ contract FlexiTimeTask {
 
   string public name;
   States public state;
-  FlexiTimeToken public token;
+  ServiceToken public token;
 
   modifier onlyCreated {
     require(state == States.Created);
     _;
   }
 
-  function FlexiTimeTask(string _name) {
+  function ServiceTask(string _name) {
     name = _name;
-    token = FlexiTimeToken(msg.sender);
+    token = ServiceToken(msg.sender);
     state = States.Created;
   }
 

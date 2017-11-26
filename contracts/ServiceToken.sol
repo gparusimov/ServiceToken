@@ -1,20 +1,20 @@
 pragma solidity ^0.4.4;
 
-import "./FlexiTimeTask.sol";
-import "./FlexiTimeAgreement.sol";
+import "./ServiceTask.sol";
+import "./ServiceAgreement.sol";
 
 /* Tracks tokens isssued */
-contract FlexiTimeToken {
+contract ServiceToken {
   event Transfer(address indexed _from, address indexed _to, uint256 _value);
-  event Task(FlexiTimeTask task);
+  event Task(ServiceTask task);
 
-  FlexiTimeAgreement public agreement; // Backlink to agreement that created the token
+  ServiceAgreement public agreement; // Backlink to agreement that created the token
   mapping (address => uint256) balances; // This creates an array with all balances
-  FlexiTimeTask[] public tasks; // Stores the registry of creating task contracts
+  ServiceTask[] public tasks; // Stores the registry of creating task contracts
 
   /* Token constructor */
-  function FlexiTimeToken() {
-    agreement = FlexiTimeAgreement(msg.sender); // Set backlink
+  function ServiceToken() {
+    agreement = ServiceAgreement(msg.sender); // Set backlink
     balances[agreement.beneficiary()] = agreement.totalSupply(); // Assign all tokens to beneficiary
   }
 
@@ -29,7 +29,7 @@ contract FlexiTimeToken {
 
   /* Create a new task where tokens can be sent into escrow */
   function createTask(string name) {
-    FlexiTimeTask task = new FlexiTimeTask(name);
+    ServiceTask task = new ServiceTask(name);
     tasks.push(task);
     Task(task);
   }
@@ -45,7 +45,7 @@ contract FlexiTimeToken {
     Transfer(msg.sender, _to, _value);
   }
 
-  function taskArray() returns (FlexiTimeTask[] _tasks) {
+  function taskArray() returns (ServiceTask[] _tasks) {
     return tasks;
   }
 }

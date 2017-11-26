@@ -1,30 +1,30 @@
 <span *ngIf="agreement">
-  <form class="ftt-form" #agreementForm="ngForm" (ngSubmit)="onSubmit()">
-    <mat-form-field class="ftt-full-width">
+  <form class="st-form" #agreementForm="ngForm" (ngSubmit)="onSubmit()">
+    <mat-form-field class="st-full-width">
       <input matInput placeholder="Token name" [(ngModel)]="agreement.name" name="name" required [disabled]='!this.agreement.inState("Draft")'>
     </mat-form-field>
-    <mat-form-field class="ftt-full-width">
+    <mat-form-field class="st-full-width">
       <input matInput placeholder="Token symbol" [(ngModel)]="agreement.symbol" name="symbol" required [disabled]='!this.agreement.inState("Draft")'>
     </mat-form-field>
-    <mat-form-field class="ftt-full-width">
+    <mat-form-field class="st-full-width">
       <input matInput placeholder="Decimal places" type="number" [(ngModel)]="agreement.decimals" name="decimals" required [disabled]='!this.agreement.inState("Draft")'>
     </mat-form-field>
-    <mat-form-field class="ftt-full-width">
+    <mat-form-field class="st-full-width">
       <input matInput placeholder="Total supply" type="number" [(ngModel)]="agreement.totalSupply" name="totalSupply" required [disabled]='!this.agreement.inState("Draft")'>
     </mat-form-field>
-    <mat-form-field class="ftt-full-width">
+    <mat-form-field class="st-full-width">
       <input matInput placeholder="Valid from" type="datetime-local" [(ngModel)]="agreement.validFromAsISOString" name="validFrom" required [disabled]='!this.agreement.inState("Draft")'>
     </mat-form-field>
-    <mat-form-field class="ftt-full-width">
+    <mat-form-field class="st-full-width">
       <input matInput placeholder="Expires end" type="datetime-local" [(ngModel)]="agreement.expiresEndAsISOString" name="expiredEnd" required [disabled]='!this.agreement.inState("Draft")'>
     </mat-form-field>
-    <mat-form-field class="ftt-full-width">
+    <mat-form-field class="st-full-width">
       <input matInput placeholder="Issuer address" [(ngModel)]="agreement.issuer" name="issuer" required [disabled]='!this.agreement.inState("Draft")'>
     </mat-form-field>
-    <mat-form-field class="ftt-full-width">
+    <mat-form-field class="st-full-width">
       <input matInput placeholder="Beneficiary address" [(ngModel)]="agreement.beneficiary" name="beneficiary" required [disabled]='!this.agreement.inState("Draft")'>
     </mat-form-field>
-    <mat-form-field class="ftt-full-width">
+    <mat-form-field class="st-full-width">
       <span matSuffix>(wei)</span>
       <input matInput placeholder="Token price" [(ngModel)]="agreement.price" type="number" name="price" required [disabled]='!this.agreement.inState("Draft")'>
       <mat-hint align="end">{{ agreement.price | wei:'ether' }} (ether)</mat-hint>
@@ -33,29 +33,29 @@
       <button mat-button type="submit" [disabled]="!agreementForm.form.valid">Create</button>
     </span>
   </form>
-  <div class="ftt-form">
+  <div class="st-form">
     <span [hidden]='this.agreement.inState("Draft")'>
-      <mat-form-field class="ftt-full-width" *ngIf="agreement.address">
+      <mat-form-field class="st-full-width" *ngIf="agreement.address">
         <a [routerLink]="['/agreements/', agreement.address]">
           <input matInput placeholder="Agreement address" [(ngModel)]="agreement.address" name="address" disabled>
         </a>
       </mat-form-field>
-      <mat-form-field class="ftt-full-width">
+      <mat-form-field class="st-full-width">
         <input matInput placeholder="State" [(ngModel)]="agreement.stateAsString" name="state" disabled>
       </mat-form-field>
     </span>
     <span [hidden]='!this.agreement.inState("Accepted")'>
-      <mat-form-field class="ftt-full-width">
+      <mat-form-field class="st-full-width">
         <input matInput placeholder="Content hash" [(ngModel)]="agreement.contentHash" name="contentHash" disabled>
       </mat-form-field>
-      <mat-form-field *ngIf="agreement.token" class="ftt-full-width">
+      <mat-form-field *ngIf="agreement.token" class="st-full-width">
         <a [routerLink]="['/tokens/', agreement.token]">
           <input matInput placeholder="Token address" [(ngModel)]="agreement.token" name="token" disabled>
         </a>
       </mat-form-field>
     </span>
     <span [hidden]='!this.agreement.inState("Submitted")'>
-      <mat-form-field class="ftt-full-width">
+      <mat-form-field class="st-full-width">
         <a [href]="'https://etherscan.io/tx/' + agreement.transaction" target="_blank">
           <input matInput placeholder="Transaction address" [(ngModel)]="agreement.transaction" name="transaction" disabled>
         </a>

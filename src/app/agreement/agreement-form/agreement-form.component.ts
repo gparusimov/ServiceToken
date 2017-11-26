@@ -47,7 +47,7 @@ export class AgreementFormComponent extends AccountComponent  {
   }
 
   watchAgreements() {
-    this.web3Service.FlexiTimeFactory.deployed().then ((factoryInstance) => {
+    this.web3Service.AgreementFactory.deployed().then ((factoryInstance) => {
       return factoryInstance.Agreement({fromBlock: "latest"});
     }).then ((agreements) => {
       agreements.watch((error, result) => {
@@ -67,7 +67,7 @@ export class AgreementFormComponent extends AccountComponent  {
     console.log('on submit');
     this.agreement.state = States.Signing;
 
-    this.web3Service.FlexiTimeFactory.deployed().then((factoryInstance) => {
+    this.web3Service.AgreementFactory.deployed().then((factoryInstance) => {
       return factoryInstance.createAgreement.sendTransaction(
         this.agreement.name,
         this.agreement.symbol,
