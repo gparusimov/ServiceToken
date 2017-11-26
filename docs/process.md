@@ -1,3 +1,6 @@
+---
+title: Process
+---
 Based on the above example, the analyst is the issuer of the token, and the client is the beneficiary. Here is a high level process overview:
 
 1. The issuer uses the [factory](AgreementFactory) contract's createAgreement transaction to create a new [agreement](ServiceAgreement) smart contract and an accompanying legal contract based on [this](Consulting-Agreement-Template) template.
