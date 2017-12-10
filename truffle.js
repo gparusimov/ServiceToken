@@ -1,5 +1,5 @@
 var HDWalletProvider = require("truffle-hdwallet-provider");
-var mnemonic = "MNEMONIC";
+var mnemonic = "myth like bonus scare over problem client lizard pioneer submit female collect";
 
 module.exports = {
   networks: {
@@ -9,7 +9,7 @@ module.exports = {
       network_id: "*" // Match any network id
     },
     rinkeby: {
-      provider: new HDWalletProvider(mnemonic, "RINKEBY_PROVIDER_URL"), 
+      provider: new HDWalletProvider(mnemonic, "https://rinkeby.infura.io/PaJsiik099LNct8ZKMlH"), 
       network_id: '4' // Official for rinkeby (3 for ropsten) 
     }
   }
